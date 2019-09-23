@@ -1,0 +1,27 @@
+Imports System
+Imports System.Data.Entity
+Imports System.Data.Entity.Migrations
+Imports System.Linq
+
+Namespace Migrations
+
+    Friend NotInheritable Class Configuration 
+        Inherits DbMigrationsConfiguration(Of CrawlerContext)
+
+        Public Sub New()
+            AutomaticMigrationsEnabled = False
+        End Sub
+
+        Protected Overrides Sub Seed(context As CrawlerContext)
+            '  This method will be called after migrating to the latest version.
+
+            '  You can use the DbSet(Of T).AddOrUpdate() helper extension method 
+            '  to avoid creating duplicate seed data.
+
+            'SetSqlGenerator("MySql.Data.MySqlClient", New MySql.Data.Entity.MySqlMigrationSqlGenerator())
+
+        End Sub
+
+    End Class
+
+End Namespace

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LeitroReceitaFederal", "LeitroReceitaFederal\LeitroReceitaFederal.vbproj", "{C31FED10-BB9F-4D83-9820-8B1B9C23EEAB}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LibNovoRoboCorp", "LibNovoRoboCorp\LibNovoRoboCorp.vbproj", "{7CBD1BEF-EBB5-40DF-B4DD-667C3DFC226E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C31FED10-BB9F-4D83-9820-8B1B9C23EEAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C31FED10-BB9F-4D83-9820-8B1B9C23EEAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C31FED10-BB9F-4D83-9820-8B1B9C23EEAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C31FED10-BB9F-4D83-9820-8B1B9C23EEAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CBD1BEF-EBB5-40DF-B4DD-667C3DFC226E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CBD1BEF-EBB5-40DF-B4DD-667C3DFC226E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CBD1BEF-EBB5-40DF-B4DD-667C3DFC226E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CBD1BEF-EBB5-40DF-B4DD-667C3DFC226E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9889850C-E171-4B3F-8C52-0A5D0FB8DE16}
+	EndGlobalSection
+EndGlobal
