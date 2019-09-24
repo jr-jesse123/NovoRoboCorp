@@ -9,6 +9,7 @@ Public Class SociosReceita ' tipo 2
     Private _Nome As String
     Private _Categoria As CategoriaEnum
     Private _ID As Integer
+    Private Shared count As Long
 
     Public Property ID As Integer
         Get
@@ -109,17 +110,28 @@ Public Class SociosReceita ' tipo 2
         Me.PercentualDoCapital = vlinha.Substring(184, 5)
 
         Dim data = vlinha.Substring(189, 8)
-        
+
         Dim ano = data.Substring(0, 4)
         Dim mes = data.Substring(4, 2)
         Dim dia = data.Substring(6, 2)
 
-        Me.DataDeEntradaNaSociedade = New Date(ano,mes,dia)
-
-
-
-
-
+        Me.DataDeEntradaNaSociedade = New Date(ano, mes, dia)
 
     End Sub
+
+    Public Overrides Function ToString() As String
+        Dim output As String
+
+        Dim intcategoria As Integer = Categoria
+
+        output = $"{count};{CNPJ};{intcategoria};{Nome};{CnpjOuCpf};{CodigoQualificacao};{PercentualDoCapital};"
+
+        output += $"{DataDeEntradaNaSociedade.ToString("yyyy-MM-dd hh:mm:ss")};"
+
+        count += 1
+
+
+        Return output
+    End Function
+
 End Class

@@ -321,10 +321,27 @@ Public Class CadastroCNPJ ' tipo 1
 
         Me.Mei = Ismei
 
-
-
-
     End Sub
+
+    Public Overrides Function ToString() As String
+        Dim output As String
+
+        Dim meicsv As String
+
+        meicsv = IIf(Mei, 1, 0)
+
+        Dim intpotantesimples As Integer = OptanteSimples
+        Dim intportdaempresa As Integer = PorteDaEmpresa
+        Dim intMatis As Integer = MatrizOuFilial
+
+        output = $"{CNPJ};{intMatis};{RazaoSocial};{NomeFantasia};{SituacaoCadastral};{CodigoDaNaturezaJudica};"
+        output += $"{DataDeInicioDaAtividade.ToString("yyyy-MM-dd hh:mm:ss")};{CNAE};{Endereco};{Bairro};{CEP};{UF};"
+        output += $"{Cidade};{Telefone};{Telefone2};{Email};{QualificacaoResponsavel};{CapitalSocial};{intportdaempresa};"
+        output += $"{intpotantesimples};{meicsv};"
+
+        Return output
+    End Function
+
 End Class
 
 Public Enum MatrizOuFilialEnum

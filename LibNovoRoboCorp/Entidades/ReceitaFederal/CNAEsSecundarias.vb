@@ -3,6 +3,7 @@
 Public Class CNAEsSecundarias ' tipo 6
     Private _Id As Integer
     Private _CNPJ As String
+    Private Shared count As Long
 
     Property Id As Integer
         Get
@@ -63,9 +64,21 @@ Public Class CNAEsSecundarias ' tipo 6
 
         Dim cnaes = vlinha.Substring(17, vlinha.Length - 17)
         cnaes = cnaes.Replace("0000000", "")
+        cnaes = cnaes.Substring(0, cnaes.IndexOf("  "))
         Me.CnaesSecStr = cnaes
 
     End Sub
+
+    Public Overrides Function ToString() As String
+
+        Dim output As String
+
+        output = $"{count};{CNPJ};{CnaesSecStr};"
+        count += 1
+
+
+        Return output
+    End Function
 
 End Class
 
