@@ -27,6 +27,7 @@ Public Class CadastroCNPJ ' tipo 1
 
     <Key>
     <StringLength(14, MinimumLength:=14)>
+    <RegularExpression("\d{14}")>
     Property CNPJ As String ' 3 ao 17
         Get
             Return _CNPJ
@@ -35,7 +36,7 @@ Public Class CadastroCNPJ ' tipo 1
             _CNPJ = Value
         End Set
     End Property
-
+    <RegularExpression("\d")>
     Property MatrizOuFilial As MatrizOuFilialEnum ' 18 1 - true 2 - false
         Get
             Return _MatrizOuFilial
@@ -74,7 +75,7 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
-    <StringLength(5)>
+    <StringLength(4)>
     Property CodigoDaNaturezaJudica As String ' 393 a 397
         Get
             Return _CodigoDaNaturezaJudica
@@ -113,7 +114,7 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
-    <StringLength(50)>
+    <StringLength(55)>
     Property Bairro As String
         Get
             Return _Bairro
@@ -123,7 +124,8 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
-    <StringLength(9)>
+    <StringLength(8)>
+    <RegularExpression("\d{8}")>
     Property CEP As String ' 674 a 683
         Get
             Return _CEP
@@ -133,6 +135,7 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
+    <RegularExpression("\D{2}")>
     <StringLength(2)>
     Property UF As String ' 684 e 685
         Get
@@ -267,7 +270,15 @@ Public Class CadastroCNPJ ' tipo 1
         Dim ano = datastr.Substring(0, 4)
         Dim mes = datastr.Substring(4, 2)
         Dim dia = datastr.Substring(6, 2)
-        Dim data As New Date(ano, mes, dia)
+        Dim data As Date
+
+        Try
+            data = New Date(ano, mes, dia)
+        Catch ex As Exception
+            Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace)
+            data = Today
+        End Try
+
 
         Me.DataDeInicioDaAtividade = data
         Me.CNAE = vlinha.Substring(375, 7)
@@ -292,7 +303,7 @@ Public Class CadastroCNPJ ' tipo 1
 
         Me.CEP = vlinha.Substring(674, 8)
         Me.UF = vlinha.Substring(682, 2)
-        Dim Cidade = vlinha.Substring(688, 50)
+        Dim Cidade = vlinha.Substring(688, 55)
         Try
             Cidade = Cidade.Substring(0, Cidade.IndexOf("    "))
         Catch
@@ -314,8 +325,19 @@ Public Class CadastroCNPJ ' tipo 1
 
         Me.QualificacaoResponsavel = vlinha.Substring(889, 2)
         Me.CapitalSocial = vlinha.Substring(891, 14)
-        Me.PorteDaEmpresa = vlinha.Substring(905, 2)
-        Me.OptanteSimples = vlinha.Substring(907, 1)
+        Try
+            Me.PorteDaEmpresa = vlinha.Substring(905, 2)
+        Catch ex As InvalidCastException
+            '    Stop
+            Me.PorteDaEmpresa = 0
+        End Try
+
+        Try
+            Me.OptanteSimples = vlinha.Substring(907, 1)
+        Catch ex As InvalidCastException
+            Me.OptanteSimples = 0
+        End Try
+
 
         Dim Ismei As Boolean = vlinha.Substring(924, 1) = "S"
 

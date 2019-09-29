@@ -1,5 +1,8 @@
-﻿Imports System.IO
+﻿Imports System.ComponentModel.DataAnnotations
+Imports System.IO
+Imports System.Runtime.CompilerServices
 Imports System.Text
+Imports System.Text.RegularExpressions
 Imports LibNovoRoboCorp
 
 Module Module1
@@ -12,7 +15,7 @@ Module Module1
         '#If DEBUG Then
         arquivo = "D:\F.K032001K.csv"
         '#Else
-        arquivo = "Z:\F.K032001K.csv"
+        'arquivo = "Z:\F.K032001K.csv"
         '#End If
         Try
 
@@ -20,17 +23,18 @@ Module Module1
             Dim FluxoDoArquivo As New FileStream(arquivo, FileMode.OpenOrCreate)
             leitor = New StreamReader(FluxoDoArquivo)
 
-        Console.WriteLine("NÃAAAAOOO FEEEECHAAARRR ESTAAAAA JANELAAAAAA ")
-        Console.WriteLine("Este programa está processando todos os cnpsj da receita federal")
-
-
-        Dim x As New RFContext
+            Console.WriteLine("NÃAAAAOOO FEEEECHAAARRR ESTAAAAA JANELAAAAAA ")
+            Console.WriteLine("Este programa está processando todos os cnpsj da receita federal")
 
 
 
-        MontarEmpresa(x)
+
+
+
+            MontarEmpresa()
 
         Catch ex As Exception
+            Stop
             Console.Write(ex.Message + Environment.NewLine + ex.StackTrace)
 
             Console.ReadLine()
@@ -41,12 +45,13 @@ Module Module1
     End Sub
 
 
-    Sub MontarEmpresa(x As RFContext)
+    Sub MontarEmpresa()
         Dim empresa As CadastroCNPJ
         Dim ProximoCnpj As Boolean
-        Dim vlinha = leitor.ReadLine.Replace(";", "")
+        Dim vlinha = leitor.ReadLine.RemoveSpecialCharacters
 
         Dim escritorEmpresas As New StreamWriter("ResultadoEmpresas.csv")
+        Dim escritorEmpresasErro As New StreamWriter("ResultadoErroEmpresas.csv")
         Dim escritorSocios As New StreamWriter("ResultadoSocios.csv")
         Dim escritorCnaes As New StreamWriter("ResultadoCnaes.csv")
 
@@ -56,57 +61,75 @@ Module Module1
 
                 If vlinha.Substring(223, 2) = "02" Then
                     Do
+                        Try
 
-                        If vlinha.Substring(0, 1) = "1" Then
-                            empresa = New CadastroCNPJ(vlinha)
-                            escritorEmpresas.WriteLine(empresa.ToString)
-
-
-
-                        ElseIf vlinha.Substring(0, 1) = "2" Then
-
-                            Dim socio As New SociosReceita(vlinha)
+                            If vlinha.Substring(0, 1) = "1" Then
+                                empresa = New CadastroCNPJ(vlinha)
 
 
+                                Try
+                                    Validator.ValidateObject(empresa, New ValidationContext(empresa))
+                                Catch ex As Exception
+                                    Stop
+                                    escritorEmpresasErro.WriteLine(empresa.ToString)
+                                End Try
 
-                            escritorSocios.WriteLine(socio.ToString)
+                                escritorEmpresas.WriteLine(empresa.ToString)
 
-                        ElseIf vlinha.Substring(0, 1) = "6" Then
+                            ElseIf vlinha.Substring(0, 1) = "2" Then
 
-                            Dim CnaesSec As New CNAEsSecundarias(vlinha)
+                                Dim socio As New SociosReceita(vlinha)
 
-                            escritorCnaes.WriteLine(CnaesSec.ToString)
+                                escritorSocios.WriteLine(socio.ToString)
 
+                            ElseIf vlinha.Substring(0, 1) = "6" Then
 
-                        End If
+                                Dim CnaesSec As New CNAEsSecundarias(vlinha)
+                                escritorCnaes.WriteLine(CnaesSec.ToString)
 
-                        vlinha = leitor.ReadLine.Replace(";", "")
+                            End If
 
+                        Catch ex As Exception
+                            Stop
+                            Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine)
+                            Console.WriteLine("******************************************")
+                            Console.WriteLine(vlinha)
+                            Console.WriteLine("******************************************")
+                        End Try
+
+                        vlinha = leitor.ReadLine.RemoveSpecialCharacters
                         ProximoCnpj = Not empresa.CNPJ.Equals(vlinha.Substring(3, 14))
 
                     Loop Until ProximoCnpj
 
                 Else
-                    vlinha = leitor.ReadLine.Replace(";", "")
+                    vlinha = leitor.ReadLine.RemoveSpecialCharacters
                 End If
 
-                Try
-                    x.SaveChangesAsync()
-                Catch ex As Exception
-                    Dim errors = x.GetValidationErrors()
-                    For Each erro In errors
-                        Console.WriteLine(erro.ToString)
-                    Next
-
-                End Try
             Else
-                vlinha = leitor.ReadLine.Replace(";", "")
+                vlinha = leitor.ReadLine.RemoveSpecialCharacters
             End If
-
-
-
-
 
         Loop
     End Sub
+
+    <Extension()>
+    Public Function RemoveSpecialCharacters(str As String) As String
+
+        Dim padrao As String = "[^a-zA-Z0-9_.| |*|@|,|(|)|-|/|-]+"
+        Try
+
+            Dim especiais = Regex.Matches(str, padrao)
+
+            If especiais.Count > 0 Then
+                'Stop
+            End If
+        Catch ex As Exception
+
+        End Try
+
+
+        Return Regex.Replace(str, padrao, " ", RegexOptions.Compiled)
+
+    End Function
 End Module

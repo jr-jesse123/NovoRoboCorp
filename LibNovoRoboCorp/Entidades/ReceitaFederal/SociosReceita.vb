@@ -109,13 +109,23 @@ Public Class SociosReceita ' tipo 2
         Me.CodigoQualificacao = vlinha.Substring(182, 2)
         Me.PercentualDoCapital = vlinha.Substring(184, 5)
 
-        Dim data = vlinha.Substring(189, 8)
+        Dim datastr = vlinha.Substring(189, 8)
 
-        Dim ano = data.Substring(0, 4)
-        Dim mes = data.Substring(4, 2)
-        Dim dia = data.Substring(6, 2)
+        Dim ano = datastr.Substring(0, 4)
+        Dim mes = datastr.Substring(4, 2)
+        Dim dia = datastr.Substring(6, 2)
 
-        Me.DataDeEntradaNaSociedade = New Date(ano, mes, dia)
+        Dim data
+
+        Try
+            data = New Date(ano, mes, dia)
+        Catch ex As Exception
+            Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace)
+            data = Today
+        End Try
+
+
+        Me.DataDeEntradaNaSociedade = Data
 
     End Sub
 
