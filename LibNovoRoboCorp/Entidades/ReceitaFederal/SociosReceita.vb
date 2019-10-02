@@ -1,6 +1,9 @@
 ﻿Imports System.ComponentModel.DataAnnotations
+Imports System.ComponentModel.DataAnnotations.Schema
 
+<Table("Receita.Socio")>
 Public Class SociosReceita ' tipo 2
+
     Private _CNPJ As String
     Private _DataDeEntradaNaSociedade As Date
     Private _PercentualDoCapital As Double
@@ -85,7 +88,7 @@ Public Class SociosReceita ' tipo 2
     End Property
 
     Property TipoDeSocio
-    Private Sub New()
+    Protected Sub New()
 
     End Sub
 
@@ -125,7 +128,7 @@ Public Class SociosReceita ' tipo 2
         End Try
 
 
-        Me.DataDeEntradaNaSociedade = Data
+        Me.DataDeEntradaNaSociedade = data
 
     End Sub
 
@@ -143,5 +146,6 @@ Public Class SociosReceita ' tipo 2
 
         Return output
     End Function
+
 
 End Class

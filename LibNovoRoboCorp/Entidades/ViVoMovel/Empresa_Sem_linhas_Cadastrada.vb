@@ -4,7 +4,7 @@ Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 Imports System.Data.Entity.Spatial
 
-<Table("corpscrapper.Empresa Sem linhas Cadastradas")>
+
 Partial Public Class Empresa_Sem_linhas_Cadastrada
     Public Property Id As Integer?
 

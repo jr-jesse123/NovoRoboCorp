@@ -4,6 +4,16 @@ Public Class CNAEsSecundarias ' tipo 6
     Private _Id As Integer
     Private _CNPJ As String
     Private Shared count As Long
+    Private _Empresa As CadastroCNPJ
+
+    Property Empresa As CadastroCNPJ
+        Get
+            Return _Empresa
+        End Get
+        Set
+            _Empresa = Value
+        End Set
+    End Property
 
     Property Id As Integer
         Get

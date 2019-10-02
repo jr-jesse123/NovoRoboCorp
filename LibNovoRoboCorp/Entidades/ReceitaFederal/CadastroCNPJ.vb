@@ -1,5 +1,7 @@
 ﻿Imports System.ComponentModel.DataAnnotations
+Imports System.ComponentModel.DataAnnotations.Schema
 
+<Table("Receita.CadastrosCNPJs")>
 Public Class CadastroCNPJ ' tipo 1
     Private _CNPJ As String
     Private _MatrizOuFilial As MatrizOuFilialEnum
@@ -22,8 +24,8 @@ Public Class CadastroCNPJ ' tipo 1
     Private _UF As String
     Private _CEP As String
     Private _Bairro As String
-
-
+    Public Property Socios As List(Of SociosReceita)
+    Public Property CnasesSecundarios As List(Of CNAEsSecundarias)
 
     <Key>
     <StringLength(14, MinimumLength:=14)>
@@ -234,7 +236,7 @@ Public Class CadastroCNPJ ' tipo 1
 
 
 
-    Private Sub New()
+    Protected Sub New()
     End Sub
 
 
@@ -364,9 +366,11 @@ Public Class CadastroCNPJ ' tipo 1
         Return output
     End Function
 
+
 End Class
 
 Public Enum MatrizOuFilialEnum
     Matriz = 1
     Filial = 2
 End Enum
+

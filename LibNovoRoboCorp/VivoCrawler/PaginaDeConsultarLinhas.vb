@@ -4,7 +4,7 @@ Imports SeleniumExtras.WaitHelpers
 
 Public Class PaginaDeConsultarLinhas
     Public drive As IWebDriver
-    Public empresa As EMPRESA
+    Public empresa As ClienteVivo
     Public ContaAtual As String
     Public crawler As Crawler
     Public Wait As WebDriverWait
@@ -93,7 +93,7 @@ Espera:             Dim tentativas As Integer = 0
 
     End Sub
 
-    Private Function EnriquecerLinhas(LinhasDataTable As DataTable, EMPRESA As EMPRESA) As DataTable
+    Private Function EnriquecerLinhas(LinhasDataTable As DataTable, EMPRESA As ClienteVivo) As DataTable
 
 
         Dim tabelaWebElement As IWebElement

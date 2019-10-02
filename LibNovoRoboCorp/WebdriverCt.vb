@@ -58,7 +58,7 @@ Public Class WebdriverCt
 
         Dim ChromeOptions = New ChromeOptions()
         ChromeOptions.AddArgument("no-sandbox")
-        ChromeOptions.AddArgument("--headless")
+        'ChromeOptions.AddArgument("--headless")
         Dim Driver = New ChromeDriver(ChromeOptions)
         Driver.Manage.Timeouts.ImplicitWait = New TimeSpan(0, 0, 5)
         Driver.Manage.Timeouts.PageLoad = New TimeSpan(0, 10, 0)
@@ -72,11 +72,11 @@ Public Class WebdriverCt
 
     Private Shared Function PrepararWebDriver() As ChromeDriver
 
-        Dim ProcessosAnteriores As Process() = Process.GetProcessesByName("FireFox")
+        Dim ProcessosAnteriores As Process() = Process.GetProcessesByName("chrome")
 
         Dim navegador = IniciarNavegador()
 
-        Dim ProcessosPosteriores As Process() = Process.GetProcessesByName("FireFox")
+        Dim ProcessosPosteriores As Process() = Process.GetProcessesByName("chrome")
 
         For Each processo In ProcessosPosteriores
             If Not ProcessosAnteriores.Contains(processo) Then

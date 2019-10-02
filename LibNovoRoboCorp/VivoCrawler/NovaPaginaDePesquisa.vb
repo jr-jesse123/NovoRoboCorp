@@ -7,7 +7,7 @@ Imports SeleniumExtras.WaitHelpers
 
 
 Public Class NovaPaginaDePesquisa
-    Dim empresa As EMPRESA
+    Dim empresa As ClienteVivo
     Dim Crawler As Crawler
     Dim drive As IWebDriver
     Public Wait As WebDriverWait
@@ -45,7 +45,7 @@ Public Class NovaPaginaDePesquisa
 
     End Sub
 
-    Private Sub PesquisarCNPJ(eMPRESA As EMPRESA)
+    Private Sub PesquisarCNPJ(eMPRESA As ClienteVivo)
 
 
         Wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@id='s_vis_div']/select")))

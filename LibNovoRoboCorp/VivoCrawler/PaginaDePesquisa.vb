@@ -7,7 +7,7 @@ Imports SeleniumExtras.WaitHelpers
 
 
 Public Class PaginaDePesquisa
-    Dim empresa As EMPRESA
+    Dim empresa As ClienteVivo
     Dim Crawler As Crawler
     Dim drive As IWebDriver
     Public Wait As WebDriverWait
@@ -102,7 +102,7 @@ Public Class PaginaDePesquisa
                 Console.WriteLine($"{CNPJ.CNPJS} Retornou informações e será adicionada ao banco")
                 WebdriverCt.Wait.Timeout = New TimeSpan(0, 0, 1)
                 ThreadsActivity = Now
-                Crawler.Empresa = New EMPRESA(CNPJ.CNPJS)
+                Crawler.Empresa = New ClienteVivo()
                 AcessarClinte()
                 Exit Sub
 

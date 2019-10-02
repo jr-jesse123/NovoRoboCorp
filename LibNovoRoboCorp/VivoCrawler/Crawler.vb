@@ -3,24 +3,20 @@ Imports System.Data.Entity
 Imports System.Data.Entity.Infrastructure
 Imports System.Threading
 Imports OpenQA.Selenium
-Imports OpenQA.Selenium.Firefox
-Imports OpenQA.Selenium.Support.UI
-
-
+Imports OpenQA.Selenium.Chrome
 
 Public Class Crawler
     Public Contextolivre As Boolean = True
     Public threadRestuladosEBuscarCNPJS As Thread = New Thread(AddressOf SalvarResultados)
-
-    Property Drive As IWebDriver = WebdriverCt.Driver
+    Property Drive As ChromeDriver = WebdriverCt.Driver
 
 
     Public Linhas, Linhas2 As New List(Of LINHA)
-    Public Empresa, Empresa2 As EMPRESA
-    Public empresas, empresas2 As New List(Of EMPRESA)
+    Public Empresa, Empresa2 As ClienteVivo
+    Public empresas, empresas2 As New List(Of ClienteVivo)
     Public Gestores, Gestores2 As New List(Of GESTOR)
     Public CNPJ As New CNPJ
-    Public socios, socios2 As New List(Of Socio)
+    Public socios, socios2 As New List(Of SociosReceita)
 
     Sub EnriquecerCNPJS()
         Do
@@ -36,7 +32,7 @@ Public Class Crawler
             End Try
 
 
-            PaginaDePesquisa.CNPJ.ENRIQUECIDO = 1
+            PaginaDepesquisa.CNPJ.ENRIQUECIDO = 1
             FilaParaSalvarInformacoes()
         Loop
     End Sub
@@ -149,7 +145,7 @@ Public Class Crawler
     Public Sub TransferirEmpresa()
 
 
-        If Empresa.Nome IsNot Nothing Then
+        If Empresa IsNot Nothing Then
             empresas.Add(FuncoesUteis.ObjectCopy(Empresa))
         End If
 
@@ -171,10 +167,10 @@ Public Class Crawler
 
     End Sub
 
-    Sub AdicionarEmpresas(empresa As EMPRESA)
+    Sub AdicionarEmpresas(empresa As ClienteVivo)
         Dim unico As Boolean = True
 
-        If empresa.Nome IsNot Nothing Then
+        If empresa IsNot Nothing Then
             Me.Empresa = empresa
         End If
 
@@ -194,11 +190,11 @@ Public Class Crawler
 
     End Sub
 
-    Sub AdicionarSocios(socio As Socio)
+    Sub AdicionarSocios(socio As SociosReceita)
         Dim unico As Boolean = True
         For Each x In socios
 
-            If x.CPFOUCNPJ = socio.CPFOUCNPJ Then
+            If x.CnpjOuCpf = socio.CnpjOuCpf Then
                 unico = False
             End If
         Next

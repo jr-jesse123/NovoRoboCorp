@@ -6,7 +6,7 @@ Imports SeleniumExtras.WaitHelpers
 Public Class PaginaDoCliente
     Public crawler As Crawler
     Public drive As IWebDriver
-    Public empresa As EMPRESA
+    Public empresa As ClienteVivo
     Public Wait As WebDriverWait
 
     Sub New(_crawler)
@@ -22,9 +22,9 @@ Public Class PaginaDoCliente
 
         Wait.Until(ExpectedConditions.ElementIsVisible(By.Id("s_3_1_4_0_Label")))
 
-        empresa.Nome = drive.FindElement(By.Id("s_3_1_4_0_Label")).Text
+        'empresa.Nome = drive.FindElement(By.Id("s_3_1_4_0_Label")).Text
 
-        Console.WriteLine($"O nome da empresa é {empresa.Nome}") ' verificar se a empresa do crawler é atualizado
+        Console.WriteLine($"O CNPJ da empresa é {empresa.CNPJ}") ' verificar se a empresa do crawler é atualizado
         crawler.Empresa = empresa
 
     End Sub
@@ -141,10 +141,10 @@ Public Class PaginaDoCliente
                                 Console.WriteLine("Endereço principal encontrado")
                                 Console.WriteLine(endereço)
                                 Dim cep As String = drive.FindElement(By.XPath("//*[@id='" + i.ToString + "_s_5_l_Postal_Code']")).Text
-                                empresa.Endereço = empresa.Endereço + "|" + endereço
-                                empresa.CEP = cep
-                                empresa.Observações = "número de endereços registrado =" + NrDeEnderecos.ToString
-                            End If
+                            'empresa.Endereço = empresa.Endereço + "|" + endereço
+                            'empresa.CEP = cep
+                            'empresa.Observações = "número de endereços registrado =" + NrDeEnderecos.ToString
+                        End If
                         Catch ex As Threading.ThreadAbortException
                             Throw
 

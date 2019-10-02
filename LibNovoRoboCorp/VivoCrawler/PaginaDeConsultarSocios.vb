@@ -5,7 +5,7 @@ Imports SeleniumExtras.WaitHelpers
 
 Public Class PaginaDeConsultarSocios
     Public drive As IWebDriver
-    Public empresa As EMPRESA
+    Public empresa As ClienteVivo
     Public crawler As Crawler
     Public Wait As WebDriverWait
 
@@ -20,7 +20,7 @@ Public Class PaginaDeConsultarSocios
         Dim MenuInferior, BtnSocios, tabelaWebElement As IWebElement
         Dim Socios As DataTable
         Dim ListaDeSocios As List(Of DataRow)
-        Dim socio As Socio
+        Dim socio As SocioCorp
 
 
         drive.FindElement(By.XPath("//*[@id='s_vctrl_div']")).FindElement(By.LinkText("Holding / Sócios")).Click() ' clica no botão holding/socios 
@@ -56,7 +56,7 @@ ExtrairSocios:
 
         For i = 0 To Socios.Rows.Count - 1
             If Socios.Rows(i)(2).Length > 1 Then
-                socio = New Socio(Socios.Rows(i), empresa.CNPJ)
+                socio = New SocioCorp
                 crawler.AdicionarSocios(socio)
             End If
         Next

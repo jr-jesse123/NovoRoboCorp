@@ -6,7 +6,7 @@ Imports SeleniumExtras.WaitHelpers
 
 Public Class PaginaDeConsultarPedidos
     Public drive As IWebDriver
-    Public empresa As EMPRESA
+    Public empresa As ClienteVivo
     Public PedidoAtual As String
     Public crawler As Crawler
     Public Wait As WebDriverWait
@@ -242,7 +242,7 @@ ProximoPedido:
                 For Each linharow In crawler.Linhas
                     If linharow.NrDaLinha = linha(26) Then
 
-                        linharow.TenoclogiaRamal = linha(46)
+                        linharow.FidelizadoAte = linha(46)
                     End If
                 Next
 

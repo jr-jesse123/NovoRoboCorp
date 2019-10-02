@@ -6,7 +6,7 @@ Imports SeleniumExtras.WaitHelpers
 Public Class PaginaDosGestores
     Public crawler As Crawler
     Public drive As IWebDriver
-    Public empresa As EMPRESA
+    Public empresa As ClienteVivo
     Public wait As WebDriverWait
 
     Sub New(_crawler As Crawler)
@@ -52,7 +52,7 @@ preparartabela:
                 If GestoresDataTable(i)(6).ToString.Length > 1 Then
                     gestor.CPF = GestoresDataTable(i)(6)
                     gestor.EMAIL = GestoresDataTable(i)(12)
-                    gestor.EMPRESA = empresa.CNPJ
+                    gestor.EMPRESA.Add(empresa)
                     gestor.Master = GestoresDataTable(i)(1)
                     gestor.NOME = GestoresDataTable(i)(2) + " " + GestoresDataTable(i)(3) + " " + GestoresDataTable(i)(4)
                     gestor.TelefoneCelular = GestoresDataTable(i)(7)

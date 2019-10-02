@@ -111,27 +111,34 @@
     <Compile Include="Bibliotecas\FuncoesUteisSelenium.vb" />
     <Compile Include="Apis\GerenciadorDeApis.vb" />
     <Compile Include="contador.vb" />
-    <Compile Include="Entidades\ReceitaFederal\CadastroReceita.vb" />
+    <Compile Include="Entidades\ViVoMovel\ControlCNPJ.vb" />
+    <Compile Include="Entidades\OperadoraEnum.vb" />
+    <Compile Include="Entidades\ReceitaFederal\CadastroCNPJ.vb" />
     <Compile Include="DAO\CrawlerContext.vb" />
-    <Compile Include="Crawler\Crawler.vb" />
-    <Compile Include="Crawler\NovaPaginaDePesquisa.vb" />
-    <Compile Include="Crawler\PaginaDeConsultarLinhas.vb" />
-    <Compile Include="Crawler\PaginaDeConsultarPedidos.vb" />
-    <Compile Include="Crawler\PaginaDeConsultarSocios.vb" />
-    <Compile Include="Crawler\PaginaDeLogin.vb" />
-    <Compile Include="Crawler\PaginaDePesquisa.vb" />
-    <Compile Include="Crawler\PaginaDoCliente.vb" />
-    <Compile Include="Crawler\PaginaDosGestores.vb" />
+    <Compile Include="Entidades\ViVoMovel\SocioCorp.vb" />
+    <Compile Include="Migrations\201910021837318_initial.Designer.vb">
+      <DependentUpon>201910021837318_initial.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910021837318_initial.vb" />
+    <Compile Include="Migrations\Configuration.vb" />
+    <Compile Include="VivoCrawler\Crawler.vb" />
+    <Compile Include="VivoCrawler\NovaPaginaDePesquisa.vb" />
+    <Compile Include="VivoCrawler\PaginaDeConsultarLinhas.vb" />
+    <Compile Include="VivoCrawler\PaginaDeConsultarPedidos.vb" />
+    <Compile Include="VivoCrawler\PaginaDeConsultarSocios.vb" />
+    <Compile Include="VivoCrawler\PaginaDeLogin.vb" />
+    <Compile Include="VivoCrawler\PaginaDePesquisa.vb" />
+    <Compile Include="VivoCrawler\PaginaDoCliente.vb" />
+    <Compile Include="VivoCrawler\PaginaDosGestores.vb" />
     <Compile Include="DAO\FuncoesUteisDAO.vb" />
     <Compile Include="DAO\MYSQLCON.vb" />
     <Compile Include="DAO\NonPublicColumnAttributeConvention.vb" />
     <Compile Include="Entidades\ReceitaFederal\CNAEsSecundarias.vb" />
-    <Compile Include="Entidades\CNPJ.vb" />
-    <Compile Include="Entidades\EMPRESA.vb" />
-    <Compile Include="Entidades\Empresa_Sem_linhas_Cadastrada.vb" />
-    <Compile Include="Entidades\GESTORE.vb" />
-    <Compile Include="Entidades\LINHA.vb" />
-    <Compile Include="Entidades\Socio.vb" />
+    <Compile Include="Entidades\ViVoMovel\CNPJ.vb" />
+    <Compile Include="Entidades\ViVoMovel\ClienteVivo.vb" />
+    <Compile Include="Entidades\ViVoMovel\Empresa_Sem_linhas_Cadastrada.vb" />
+    <Compile Include="Entidades\ViVoMovel\GESTORE.vb" />
+    <Compile Include="Entidades\ViVoMovel\LINHA.vb" />
     <Compile Include="Entidades\ReceitaFederal\SociosReceita.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -152,6 +159,9 @@
     <Compile Include="WebdriverCt.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Migrations\201910021837318_initial.resx">
+      <DependentUpon>201910021837318_initial.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
