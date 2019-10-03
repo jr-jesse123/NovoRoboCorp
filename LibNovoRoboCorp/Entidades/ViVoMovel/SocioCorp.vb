@@ -1,8 +1,19 @@
 ﻿Imports System.ComponentModel.DataAnnotations.Schema
 
-<Table("SovioVivoCorp")>
+
 Public Class SocioCorp
     Inherits SociosReceita
-    Property TelefoneCadastrado As String
 
+    Private _TelefoneCadastrado As String
+
+    Property TelefoneCadastrado As String
+        Get
+            Return _TelefoneCadastrado
+        End Get
+        Set
+            Dim sonumero = FuncoesUteis.RemoveSpecialCharacters(Value)
+            _TelefoneCadastrado = sonumero
+        End Set
+    End Property
 End Class
+

@@ -1,8 +1,4 @@
-﻿Imports System.ComponentModel.DataAnnotations.Schema
-Imports System.Data.Entity
-Imports System.Data.Entity.ModelConfiguration.Configuration
-Imports System.Data.Entity.ModelConfiguration.Conventions
-Imports System.Reflection
+﻿Imports System.Data.Entity
 Imports MySql.Data.Entity
 
 
@@ -14,16 +10,16 @@ Public Class CrawlerContext
 
 
     Public Property LINHAS As DbSet(Of LINHA)
-    Public Property GESTORES As DbSet(Of GESTOR)
-    Public Property Empresas As DbSet(Of CadastroCNPJ)
+    'Public Property GESTORES As DbSet(Of GestorVivo)
+    'Public Property Empresas As DbSet(Of CadastroCNPJ)
 
 
 
 
 
-    'Port=3309
+
     Sub New()
-        MyBase.New("server=192.168.244.112;userid=root;password=758686;database=CRMIntegrado;persistsecurityinfo=True")
+        MyBase.New("server=192.168.244.112;userid=root;password=758686;persistsecurityinfo=True;database=VivoCorp")
     End Sub
 
 
@@ -38,6 +34,26 @@ Public Class CrawlerContext
         '         cv.ToTable("ClienteVivo")
         '     End Sub)
 
+        'modelBuilder.HasDefaultSchema("VivoCorp")
+
+
+        'modelBuilder.Entity(Of ClienteVivo)() _
+        '.ToTable("ClientesVivo", "Receita")
+
+        'modelBuilder.Entity(Of CadastroCNPJ)() _
+        '.ToTable("CadastrosCNPJs", "Receita")
+
+        'modelBuilder.Entity(Of SociosReceita)() _
+        '.ToTable("Socios", "Receita")
+
+        'modelBuilder.Entity(Of CadastroCNPJEnriquecido)() _
+        '.ToTable("CadastrosCNPJEnriquecidos", "VivoCorp") ' verificar este teste
+
+        'modelBuilder.Entity(Of SocioCorp)() _
+        '.ToTable("SociosVivoCorp") ' verificar este teste
+
+
+
     End Sub
 
 
@@ -45,19 +61,19 @@ End Class
 
 
 
-Public Class EntityMappingConfiguration(Of TEntityType) ' where TEntityType : Class
+'Public Class EntityMappingConfiguration(Of TEntityType) ' where TEntityType : Class
 
-    Public Function Requires(discriminator As String) As ValueConditionConfiguration
+'    Public Function Requires(discriminator As String) As ValueConditionConfiguration
 
-    End Function
-
-
-
-    Public Sub ToTable(tableName As String)
-    End Sub
-
-    Public Sub MapInheritedProperties()
-    End Sub
+'    End Function
 
 
-End Class
+
+'    Public Sub ToTable(tableName As String)
+'    End Sub
+
+'    Public Sub MapInheritedProperties()
+'    End Sub
+
+
+'End Class

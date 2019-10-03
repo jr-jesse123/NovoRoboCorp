@@ -1,33 +1,36 @@
 ﻿Imports CrawlerCorp.CrawlerClass
+Imports LibNovoRoboCorp
 Imports OpenQA.Selenium
 Imports OpenQA.Selenium.Support.UI
 Imports SeleniumExtras.WaitHelpers
 
 Public Class PaginaDeConsultarSocios
-    Public drive As IWebDriver
+    Public Property ListaSocios As List(Of SociosReceita)
+    Public driver As IWebDriver
     Public empresa As ClienteVivo
     Public crawler As Crawler
     Public Wait As WebDriverWait
 
-    Sub New(crawler As Crawler)
-        Me.drive = crawler.Drive
-        Me.empresa = crawler.Empresa
-        Me.crawler = crawler
+    Sub New(socios As List(Of SociosReceita))
+        Me.ListaSocios = socios
+        Me.driver = WebdriverCt.Driver
         Me.Wait = WebdriverCt.Wait
     End Sub
 
     Public Sub EnriquecerSocios()
-        Dim MenuInferior, BtnSocios, tabelaWebElement As IWebElement
+        Dim tabelaWebElement As IWebElement
         Dim Socios As DataTable
         Dim ListaDeSocios As List(Of DataRow)
-        Dim socio As SocioCorp
 
 
-        drive.FindElement(By.XPath("//*[@id='s_vctrl_div']")).FindElement(By.LinkText("Holding / Sócios")).Click() ' clica no botão holding/socios 
+        'socio = CType(socio, SocioCorp)
+
+
+        driver.FindElement(By.XPath("//*[@id='s_vctrl_div']")).FindElement(By.LinkText("Holding / Sócios")).Click() ' clica no botão holding/socios 
 
 ExtrairSocios:
         Try
-            tabelaWebElement = ExtrairSociosHolding()
+            tabelaWebElement = ObterTabelaElement()
 
             If tabelaWebElement Is Nothing Then Exit Sub
 
@@ -44,20 +47,30 @@ ExtrairSocios:
             Next
 
         Catch ex As StaleElementReferenceException
-            Console.WriteLine("nova tentativa por erro de stale")
+            Crawler.EnviarLog("nova tentativa por erro de stale")
             GoTo ExtrairSocios
 
         Catch ex As TimeoutException
-            Console.WriteLine("nova tentativa por erro de timeout")
+            Crawler.EnviarLog("nova tentativa por erro de timeout")
             GoTo ExtrairSocios
         End Try
 
-        Console.WriteLine($"Encontrados {(ListaDeSocios.Count - 1).ToString} sócio(s)")
+        Crawler.EnviarLog($"Encontrados {(ListaDeSocios.Count - 1).ToString} sócio(s)")
 
         For i = 0 To Socios.Rows.Count - 1
             If Socios.Rows(i)(2).Length > 1 Then
-                socio = New SocioCorp
-                crawler.AdicionarSocios(socio)
+
+                Try
+                    Stop
+                    Dim novoSocio = CType(ListaSocios.Where(Function(s) s.CnpjOuCpf = Socios.Rows(i)(2)).First, SocioCorp)
+                    novoSocio.TelefoneCadastrado = Socios.Rows(i)(7)
+
+
+                Catch ex As Exception
+
+                End Try
+
+
             End If
         Next
 
@@ -67,21 +80,21 @@ ExtrairSocios:
 
 
 
-    Private Function ExtrairSociosHolding() As IWebElement
+    Private Function ObterTabelaElement() As IWebElement
         Dim tabelaWebElement As IWebElement
         Dim tentativas As Integer
 
         On Error Resume Next
         Do While tabelaWebElement Is Nothing And tentativas < 5
 
-            tabelaWebElement = drive.FindElement(By.XPath("//*[@id='s_5_l']"))
+            tabelaWebElement = driver.FindElement(By.XPath("//*[@id='s_5_l']"))
             If tabelaWebElement Is Nothing Then
-                tabelaWebElement = drive.FindElement(By.XPath("//*[@id='s_3_l']"))
+                tabelaWebElement = driver.FindElement(By.XPath("//*[@id='s_3_l']"))
                 tentativas = tentativas + 1
             End If
 
             If tabelaWebElement Is Nothing Then
-                tabelaWebElement = drive.FindElement(By.XPath("//*[@id='s_4_l']"))
+                tabelaWebElement = driver.FindElement(By.XPath("//*[@id='s_4_l']"))
                 tentativas = tentativas + 1
             End If
 
@@ -90,11 +103,5 @@ ExtrairSocios:
         On Error GoTo 0
 
     End Function
-
-
-
-
-
-
 
 End Class

@@ -1,242 +1,243 @@
 ﻿Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 
-<Table("Receita.CadastrosCNPJs")>
+<Table("CadastrosCNPJs", Schema:="ReceitaFederal")>
 Public Class CadastroCNPJ ' tipo 1
-    Private _CNPJ As String
-    Private _MatrizOuFilial As MatrizOuFilialEnum
-    Private _RazaoSocial As String
-    Private _NomeFantasia As String
-    Private _SituacaoCadastral As Integer
-    Private _CodigoDaNaturezaJudica As String
-    Private _DataDeInicioDaAtividade As Date
-    Private _CNAE As String
-    Private _Endereco As String
-    Private _Mei As Boolean
-    Private _OptanteSimples As OpcaoSimplesEnum
-    Private _PorteDaEmpresa As PorteEmpresaEnum
-    Private _CapitalSocial As Double
-    Private _QualificacaoResponsavel As String
-    Private _Email As String
-    Private _Telefone2 As String
-    Private _Telefone As String
-    Private _Cidade As String
-    Private _UF As String
-    Private _CEP As String
-    Private _Bairro As String
-    Public Property Socios As List(Of SociosReceita)
-    Public Property CnasesSecundarios As List(Of CNAEsSecundarias)
+    Protected _CNPJ As String
+    Protected _MatrizOuFilial As MatrizOuFilialEnum
+    Protected _RazaoSocial As String
+    Protected _NomeFantasia As String
+    Protected _SituacaoCadastral As Integer
+    Protected _CodigoDaNaturezaJudica As String
+    Protected _DataDeInicioDaAtividade As Date
+    Protected _CNAE As String
+    Protected _Endereco As String
+    Protected _Mei As Boolean
+    Protected _OptanteSimples As OpcaoSimplesEnum
+    Protected _PorteDaEmpresa As PorteEmpresaEnum
+    Protected _CapitalSocial As Double
+    Protected _QualificacaoResponsavel As String
+    Protected _Email As String
+    Protected _Telefone2 As String
+    Protected _Telefone As String
+    Protected _Cidade As String
+    Protected _UF As String
+    Protected _CEP As String
+    Protected _Bairro As String
+    Public Overridable Property Socios As List(Of SociosReceita)
+    Public Overridable Property CnasesSecundarios As List(Of CNAEsSecundarias)
 
     <Key>
+    <Required>
     <StringLength(14, MinimumLength:=14)>
     <RegularExpression("\d{14}")>
-    Property CNPJ As String ' 3 ao 17
+    Public Overridable Property CNPJ As String ' 3 ao 17
         Get
             Return _CNPJ
         End Get
-        Private Set
+        Protected Set
             _CNPJ = Value
         End Set
     End Property
     <RegularExpression("\d")>
-    Property MatrizOuFilial As MatrizOuFilialEnum ' 18 1 - true 2 - false
+    Overridable Property MatrizOuFilial As MatrizOuFilialEnum ' 18 1 - true 2 - false
         Get
             Return _MatrizOuFilial
         End Get
-        Private Set
+        Protected Set
             _MatrizOuFilial = Value
         End Set
     End Property
 
     <StringLength(150)>
-    Property RazaoSocial As String ' 19 ao 168
+    Overridable Property RazaoSocial As String ' 19 ao 168
         Get
             Return _RazaoSocial
         End Get
-        Private Set
+        Protected Set
             _RazaoSocial = Value
         End Set
     End Property
 
     <StringLength(55)>
-    Property NomeFantasia As String ' '169 a 223
+    Overridable Property NomeFantasia As String ' '169 a 223
         Get
             Return _NomeFantasia
         End Get
-        Private Set
+        Protected Set
             _NomeFantasia = Value
         End Set
     End Property
 
-    Property SituacaoCadastral As Integer '224 e 225
+    Overridable Property SituacaoCadastral As Integer '224 e 225
         Get
             Return _SituacaoCadastral
         End Get
-        Private Set
+        Protected Set
             _SituacaoCadastral = Value
         End Set
     End Property
 
     <StringLength(4)>
-    Property CodigoDaNaturezaJudica As String ' 393 a 397
+    Overridable Property CodigoDaNaturezaJudica As String ' 393 a 397
         Get
             Return _CodigoDaNaturezaJudica
         End Get
-        Private Set
+        Protected Set
             _CodigoDaNaturezaJudica = Value
         End Set
     End Property
 
-    Property DataDeInicioDaAtividade As Date ' 398 a 495
+    Overridable Property DataDeInicioDaAtividade As Date ' 398 a 495
         Get
             Return _DataDeInicioDaAtividade
         End Get
-        Private Set
+        Protected Set
             _DataDeInicioDaAtividade = Value
         End Set
     End Property
 
     <StringLength(7, MinimumLength:=7)>
-    Property CNAE As String ' 496 a 502
+    Overridable Property CNAE As String ' 496 a 502
         Get
             Return _CNAE
         End Get
-        Private Set
+        Protected Set
             _CNAE = Value
         End Set
     End Property
 
     <StringLength(240)>
-    Property Endereco As String ' 403 a 643
+    Overridable Property Endereco As String ' 403 a 643
         Get
             Return _Endereco
         End Get
-        Private Set
+        Protected Set
             _Endereco = Value
         End Set
     End Property
 
     <StringLength(55)>
-    Property Bairro As String
+    Overridable Property Bairro As String
         Get
             Return _Bairro
         End Get
-        Private Set
+        Protected Set
             _Bairro = Value
         End Set
     End Property
 
     <StringLength(8)>
     <RegularExpression("\d{8}")>
-    Property CEP As String ' 674 a 683
+    Overridable Property CEP As String ' 674 a 683
         Get
             Return _CEP
         End Get
-        Private Set
+        Protected Set
             _CEP = Value
         End Set
     End Property
 
     <RegularExpression("\D{2}")>
     <StringLength(2)>
-    Property UF As String ' 684 e 685
+    Overridable Property UF As String ' 684 e 685
         Get
             Return _UF
         End Get
-        Private Set
+        Protected Set
             _UF = Value
         End Set
     End Property
 
     <StringLength(60)>
-    Property Cidade As String ' 690 a 651
+    Overridable Property Cidade As String ' 690 a 651
         Get
             Return _Cidade
         End Get
-        Private Set
+        Protected Set
             _Cidade = Value
         End Set
     End Property
 
     <StringLength(10)>
-    Property Telefone As String
+    Overridable Property Telefone As String
         Get
             Return _Telefone
         End Get
-        Private Set
+        Protected Set
             _Telefone = Value
         End Set
     End Property
 
     <StringLength(10)>
-    Property Telefone2 As String ' 662 a 671
+    Overridable Property Telefone2 As String ' 662 a 671
         Get
             Return _Telefone2
         End Get
-        Private Set
+        Protected Set
             _Telefone2 = Value
         End Set
     End Property
 
     <StringLength(240)>
-    Property Email As String ' 672 a 821
+    Overridable Property Email As String ' 672 a 821
         Get
             Return _Email
         End Get
-        Private Set
+        Protected Set
             _Email = Value
         End Set
     End Property
 
     <StringLength(2)>
-    Property QualificacaoResponsavel As String ' 822 e 823
+    Overridable Property QualificacaoResponsavel As String ' 822 e 823
         Get
             Return _QualificacaoResponsavel
         End Get
-        Private Set
+        Protected Set
             _QualificacaoResponsavel = Value
         End Set
     End Property
 
-    Property CapitalSocial As Double ' 824 a 827
+    Overridable Property CapitalSocial As Double ' 824 a 827
         Get
             Return _CapitalSocial
         End Get
-        Private Set
+        Protected Set
             _CapitalSocial = Value
         End Set
     End Property
 
-    Property PorteDaEmpresa As PorteEmpresaEnum
+    Overridable Property PorteDaEmpresa As PorteEmpresaEnum
         Get
             Return _PorteDaEmpresa
         End Get
-        Private Set
+        Protected Set
             _PorteDaEmpresa = Value
         End Set
     End Property
 
-    Property OptanteSimples As OpcaoSimplesEnum
+    Overridable Property OptanteSimples As OpcaoSimplesEnum
         Get
             Return _OptanteSimples
         End Get
-        Private Set
+        Protected Set
             _OptanteSimples = Value
         End Set
     End Property
 
-    Property Mei As Boolean ' s para sim n para não
+    Overridable Property Mei As Boolean ' s para sim n para não
         Get
             Return _Mei
         End Get
-        Private Set
+        Protected Set
             _Mei = Value
         End Set
     End Property
 
 
 
-    Protected Sub New()
+    Public Sub New()
     End Sub
 
 
@@ -277,7 +278,7 @@ Public Class CadastroCNPJ ' tipo 1
         Try
             data = New Date(ano, mes, dia)
         Catch ex As Exception
-            Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace)
+            Crawler.EnviarLog(ex.Message + Environment.NewLine + ex.StackTrace)
             data = Today
         End Try
 

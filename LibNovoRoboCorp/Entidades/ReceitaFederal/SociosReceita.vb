@@ -1,7 +1,7 @@
 ﻿Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 
-<Table("Receita.Socio")>
+
 Public Class SociosReceita ' tipo 2
 
     Private _CNPJ As String
@@ -123,7 +123,7 @@ Public Class SociosReceita ' tipo 2
         Try
             data = New Date(ano, mes, dia)
         Catch ex As Exception
-            Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace)
+            Crawler.EnviarLog(ex.Message + Environment.NewLine + ex.StackTrace)
             data = Today
         End Try
 

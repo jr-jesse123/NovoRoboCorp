@@ -116,13 +116,17 @@
     <Compile Include="Entidades\ReceitaFederal\CadastroCNPJ.vb" />
     <Compile Include="DAO\CrawlerContext.vb" />
     <Compile Include="Entidades\ViVoMovel\SocioCorp.vb" />
-    <Compile Include="Migrations\201910021837318_initial.Designer.vb">
-      <DependentUpon>201910021837318_initial.vb</DependentUpon>
+    <Compile Include="Migrations\201910031235419_initial.Designer.vb">
+      <DependentUpon>201910031235419_initial.vb</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201910021837318_initial.vb" />
+    <Compile Include="Migrations\201910031235419_initial.vb" />
+    <Compile Include="Migrations\201910031252156_teste2.Designer.vb">
+      <DependentUpon>201910031252156_teste2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910031252156_teste2.vb" />
     <Compile Include="Migrations\Configuration.vb" />
     <Compile Include="VivoCrawler\Crawler.vb" />
-    <Compile Include="VivoCrawler\NovaPaginaDePesquisa.vb" />
+    <Compile Include="VivoCrawler\MontadorClienteVivo.vb" />
     <Compile Include="VivoCrawler\PaginaDeConsultarLinhas.vb" />
     <Compile Include="VivoCrawler\PaginaDeConsultarPedidos.vb" />
     <Compile Include="VivoCrawler\PaginaDeConsultarSocios.vb" />
@@ -155,12 +159,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Outras Classes\Start.vb" />
     <Compile Include="WebdriverCt.vb" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201910021837318_initial.resx">
-      <DependentUpon>201910021837318_initial.vb</DependentUpon>
+    <EmbeddedResource Include="Migrations\201910031235419_initial.resx">
+      <DependentUpon>201910031235419_initial.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910031252156_teste2.resx">
+      <DependentUpon>201910031252156_teste2.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -182,7 +188,10 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Outras Classes\" />
+    <Folder Include="VivoCrawler\exceptions\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\Projeto1\packages\Selenium.WebDriver.ChromeDriver.76.0.3809.12600\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\Projeto1\packages\Selenium.WebDriver.ChromeDriver.76.0.3809.12600\build\Selenium.WebDriver.ChromeDriver.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

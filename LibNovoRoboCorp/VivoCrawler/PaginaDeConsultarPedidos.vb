@@ -1,29 +1,26 @@
 ﻿Imports CrawlerCorp.CrawlerClass
 Imports OpenQA.Selenium
+Imports OpenQA.Selenium.Chrome
 Imports OpenQA.Selenium.Support.UI
 Imports RobôCorp.CrawlerClass
 Imports SeleniumExtras.WaitHelpers
 
 Public Class PaginaDeConsultarPedidos
-    Public drive As IWebDriver
-    Public empresa As ClienteVivo
-    Public PedidoAtual As String
-    Public crawler As Crawler
-    Public Wait As WebDriverWait
-    Public linhas As List(Of LINHA)
-    Public DataDoPedido As Date
-    Public fidelidades As IList
-    Public fidelizacoes
+    Public Property drive As ChromeDriver
+    Public Property PedidoAtual As String
+    Public Property Wait As WebDriverWait
+    Public Property ListaLinhas As List(Of LINHA)
+    Public Property DataDoPedido As Date
+    Public Property fidelidades As IList
+    Public Property fidelizacoes
 
-    Sub New(_crawler As Crawler, _linhas As List(Of LINHA))
-        Me.drive = _crawler.Drive
-        Me.empresa = _crawler.Empresa
+    Sub New(_linhas As List(Of LINHA))
+        Me.drive = WebdriverCt.Driver
         Me.Wait = WebdriverCt.Wait
-        Me.crawler = _crawler
-        Me.linhas = _linhas
+        Me.ListaLinhas = _linhas
 
-        'EnriquecerCarteira()
-        AcessarPedidos()
+
+
 
     End Sub
 
@@ -82,7 +79,7 @@ obterlinhas:
 
             End If
 
-            ThreadsActivity = Now
+
             Referencia = drive.FindElement(By.XPath("//*[@id='1_s_2_l_VIVO_Organization']"))
 
         Loop While TemMaisContas("//*[@id='s_2_rc']", "//*[@id='last_pager_s_2_l']", Referencia)
@@ -90,120 +87,122 @@ obterlinhas:
     End Sub
 
     Public Function VerificarFidelidades()
+        AcessarPedidos()
+
         Dim LinhasDataTable As DataTable
         Dim nrdecontas As Integer = 1
-        
 
 
-            Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@id='s_1_rc']"))) ' aguardar o número de registros aparecer
-            Wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath("//*[@id='s_1_1_18_0_Ctrl']"), "Pesquisar")) ' aguardar o número de registros aparecer
 
-            Console.WriteLine("Procurando por Pedidos concluídos Nos últimos 24 Meses")
+        Wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@id='s_1_rc']"))) ' aguardar o número de registros aparecer
+        Wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath("//*[@id='s_1_1_18_0_Ctrl']"), "Pesquisar")) ' aguardar o número de registros aparecer
 
-            If drive.FindElement(By.XPath("//*[@id='s_1_rc']")).Text = "Sem registros" Then
-                Exit Function
-            End If
+        Console.WriteLine("Procurando por Pedidos concluídos Nos últimos 24 Meses")
 
-            ' ordenar por data
+        If drive.FindElement(By.XPath("//*[@id='s_1_rc']")).Text = "Sem registros" Then
+            Exit Function
+        End If
 
-            drive.FindElement(By.XPath("//*[@id='jqgh_s_1_l_Order_Date']")).Click()
-            Wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='jqgh_s_1_l_Order_Date']")))
-            drive.FindElement(By.XPath("//*[@id='jqgh_s_1_l_Order_Date']")).Click()
+        ' ordenar por data
 
-            '************
+        drive.FindElement(By.XPath("//*[@id='jqgh_s_1_l_Order_Date']")).Click()
+        Wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='jqgh_s_1_l_Order_Date']")))
+        drive.FindElement(By.XPath("//*[@id='jqgh_s_1_l_Order_Date']")).Click()
+
+        '************
 
 
-            Me.PedidoAtual = EncontrarPrimeiroPedidoConcluído()
+        Me.PedidoAtual = EncontrarPrimeiroPedidoConcluído()
 
-            Dim xpath = "//*[@id='s_2_1_5_0_Ctrl']"
+        Dim xpath = "//*[@id='s_2_1_5_0_Ctrl']"
 
-            Dim tentativas As Integer = 0
+        Dim tentativas As Integer = 0
 
-            If PedidoAtual <> "" Then
+        If PedidoAtual <> "" Then
 
-                Do
+            Do
 
 Espera:
+                Try
+
+                    Wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath(xpath), "Replicar Tudo"))
+                Catch ex As WebDriverTimeoutException
+
+                    If tentativas > 5 Then Throw
+                    'drive.FindElement(By.XPath(xpath))
+
                     Try
+                        If drive.FindElement(By.XPath("/html/body/div[1]/div/div[5]/div/div[6]/div/div[1]/div/table/tbody/tr/td/table[3]/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td")).Text _
+                            = "Você não tem os privilégios necessários para visualizar informações detalhadas para este registro ou essas informações foram recentemente excluídas.(SBL-DAT-00309)" & vbCrLf & " " Then
+                            GoTo ProximoPedido
+                        End If
+                    Catch ex2 As Exception
 
-                        Wait.Until(ExpectedConditions.TextToBePresentInElementLocated(By.XPath(xpath), "Replicar Tudo"))
-                    Catch ex As WebDriverTimeoutException
-
-                        If tentativas > 5 Then Throw
-                        'drive.FindElement(By.XPath(xpath))
-
-                        Try
-                            If drive.FindElement(By.XPath("/html/body/div[1]/div/div[5]/div/div[6]/div/div[1]/div/table/tbody/tr/td/table[3]/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td")).Text _
-                                = "Você não tem os privilégios necessários para visualizar informações detalhadas para este registro ou essas informações foram recentemente excluídas.(SBL-DAT-00309)" & vbCrLf & " " Then
-                                GoTo ProximoPedido
-                            End If
-                        Catch ex2 As Exception
-
-                        End Try
-
-
-                        Console.WriteLine("aguardando por Pedidos")
-                        tentativas = tentativas + 1
-                        Console.WriteLine("Tentativa " + tentativas.ToString)
-                        GoTo Espera
                     End Try
 
-                    Console.WriteLine($"Pesquisando o Pedido {PedidoAtual} às {Now.TimeOfDay.ToString}")
 
-                    Dim tentativas3 As Integer = 0
-                    Try
+                    Console.WriteLine("aguardando por Pedidos")
+                    tentativas = tentativas + 1
+                    Console.WriteLine("Tentativa " + tentativas.ToString)
+                    GoTo Espera
+                End Try
+
+                Console.WriteLine($"Pesquisando o Pedido {PedidoAtual} às {Now.TimeOfDay.ToString}")
+
+                Dim tentativas3 As Integer = 0
+                Try
 Enriquecer:
-                        LinhasDataTable = EnriquecerFidelidades(LinhasDataTable)
-                    Catch ex As StaleElementReferenceException
-                        GoTo Enriquecer
-                    Catch ex As WebDriverTimeoutException
-                        If tentativas3 > 5 Then Throw
-                        tentativas3 = tentativas3 + 1
-                        Console.WriteLine("Tentativa " + tentativas3.ToString)
-                        GoTo Enriquecer
-                    End Try
-                    tentativas3 = 0
+                    LinhasDataTable = EnriquecerFidelidades(LinhasDataTable)
+                Catch ex As StaleElementReferenceException
+                    GoTo Enriquecer
+                Catch ex As WebDriverTimeoutException
+                    If tentativas3 > 5 Then Throw
+                    tentativas3 = tentativas3 + 1
+                    Console.WriteLine("Tentativa " + tentativas3.ToString)
+                    GoTo Enriquecer
+                End Try
+                tentativas3 = 0
 
 
 ProximoPedido:
-                    Try
-                        drive.Navigate.Back()
-                        Wait.Until(ExpectedConditions.ElementIsVisible(By.LinkText(PedidoAtual))) ' espera a contaatual aparecer pra mostrar que voltou pra pagina de contas
-                    Catch ex As WebDriverTimeoutException
-                        Console.WriteLine("tentando novo retorno")
-                        drive.Navigate.Back()
-                    End Try
-
-
-                Loop While TemMaisContas2(Me.PedidoAtual)
-
-
-
-                If LinhasDataTable IsNot Nothing Then
-                    Console.WriteLine($"Foram encontradas {LinhasDataTable.Rows.Count} linhas fidelizadas no cnpj {empresa.CNPJ} totalizando {crawler.Linhas.Count.ToString} linhas")
-                Else
-                    Console.WriteLine($"Não foram encontrados pedidos concluídos nas  {nrdecontas.ToString} contas do cnpj")
-                End If
-
-                LinhasDataTable = InverterOdemTabela(LinhasDataTable)
                 Try
-                    fidelizacoes = LinhasDataTable.AsEnumerable.Distinct(New ComparadorFidelizacoes)
-                Catch ex As Exception
-
+                    drive.Navigate.Back()
+                    Wait.Until(ExpectedConditions.ElementIsVisible(By.LinkText(PedidoAtual))) ' espera a contaatual aparecer pra mostrar que voltou pra pagina de contas
+                Catch ex As WebDriverTimeoutException
+                    Console.WriteLine("tentando novo retorno")
+                    drive.Navigate.Back()
                 End Try
 
 
-                ArquivarDataDeFidelidadeDasLinhas()
+            Loop While TemMaisContas2(Me.PedidoAtual)
 
+
+
+            If LinhasDataTable IsNot Nothing Then
+                Crawler.EnviarLog($"Foram encontradas {LinhasDataTable.Rows.Count} linhas fidelizadas neste cnpj")
             Else
-                Console.WriteLine("Nenhuma Fidelização Econtrada")
-
+                Crawler.EnviarLog($"Não foram encontrados pedidos concluídos nas  {nrdecontas.ToString} contas do cnpj")
             End If
-            nrdecontas = 0
+
+            LinhasDataTable = InverterOdemTabela(LinhasDataTable)
+            Try
+                fidelizacoes = LinhasDataTable.AsEnumerable.Distinct(New ComparadorFidelizacoes)
+            Catch ex As Exception
+
+            End Try
 
 
-            Exit Function
-            Return ""
+            ArquivarDataDeFidelidadeDasLinhas()
+
+        Else
+            Crawler.EnviarLog("Nenhuma Fidelização Econtrada")
+
+        End If
+
+
+
+        Exit Function
+        Return ""
 
     End Function
 
@@ -222,7 +221,7 @@ ProximoPedido:
                 Dim copialinha As DataRow = novaTabela.NewRow()
                 copialinha.ItemArray = linhasDataTable.Rows(x).ItemArray.Clone
 
-                novaTabela.Rows.Add(COPIALINHA)
+                novaTabela.Rows.Add(copialinha)
 
             Catch ex As Exception
 
@@ -239,9 +238,8 @@ ProximoPedido:
         For Each linha In fidelizacoes
 
             Try
-                For Each linharow In crawler.Linhas
+                For Each linharow In ListaLinhas
                     If linharow.NrDaLinha = linha(26) Then
-
                         linharow.FidelizadoAte = linha(46)
                     End If
                 Next
@@ -359,7 +357,7 @@ obterlinhas:
 
             End If
 
-            ThreadsActivity = Now
+
             linhaReferencia = drive.FindElement(By.XPath("//*[@id='1_s_2_l_Service_Id']"))
 
             If linhaEncontrada Then Console.WriteLine("Pesquisando Pedidos de " + DataDoPedido.ToShortDateString + " às " + Now.TimeOfDay.ToString)
@@ -374,7 +372,7 @@ obterlinhas:
     End Function
 
     Private Function EncontrarPrimeiroPedidoConcluído() As String
-        
+
         Dim maximoPedidos As Integer
         Dim ProximaContaXPath, NumProximaconta As String
 
@@ -394,7 +392,7 @@ obterlinhas:
 
         End If
 
-        
+
         Do
 
             maximoPedidos = DefinirLimiteDolooping("//*[@id='s_1_rc']")
@@ -433,7 +431,7 @@ Checarpedidos:
 
 
             Next
-            ThreadsActivity = Now
+
         Loop While TemMaisContas("//*[@id='s_1_rc']", "//*[@id='last_pager_s_2_l']/span")
 
         Return ""
@@ -489,7 +487,7 @@ Checarpedidos:
                             End If
                         Next
                         linhaReferencia = drive.FindElement(By.XPath("//*[@id='1_s_1_l_Order_Number']"))
-                        ThreadsActivity = Now
+
                     Loop While TemMaisContas("//*[@id='s_1_rc']", "/html/body/div[1]/div/div[5]/div/div[6]/div/div[1]/div/div[3]/div[1]/div/div/form/span/div/div[2]/div/div/div[5]/div/table/tbody/tr/td[2]/table/tbody/tr/td[7]/span", linhaReferencia)
                 End If
             Next

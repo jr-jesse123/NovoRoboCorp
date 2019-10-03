@@ -1,4 +1,5 @@
 ﻿
+Imports System.Data.Entity
 Imports CrawlerCorp.CrawlerClass
 Imports OpenQA.Selenium
 Imports OpenQA.Selenium.Support.UI
@@ -7,12 +8,11 @@ Imports SeleniumExtras.WaitHelpers
 
 
 Public Class PaginaDePesquisa
-    Dim empresa As ClienteVivo
     Dim Crawler As Crawler
     Dim drive As IWebDriver
     Public Wait As WebDriverWait
-    Public CNPJ As CNPJ
-    Public Contextolivre As Boolean = True
+    Private Cnpjs As List(Of CadastroCNPJ)
+
 
     Sub New()
         Me.drive = WebdriverCt.Driver
@@ -20,33 +20,17 @@ Public Class PaginaDePesquisa
 
     End Sub
 
-    Public Sub ConsultarCnpj()
-
-        CNPJ = listaDeCNPJ.Where(Function(X) X.ENRIQUECIDO = Nothing).First
+    Private Sub ConsultarCnpj(CadastroCnpj As CadastroCNPJ)
 
         If FuncoesUteis.ChecarPresenca(drive, "//*[@id='s_1_1_16_0_Ctrl']") Then
-            PesquisarCNPJ(CNPJ)
+            PesquisarCNPJ(CadastroCnpj)
         Else
             PosicionarNaConsulta()
-            PesquisarCNPJ(CNPJ)
-        End If
-
-
-
-        If listaDeCNPJ.Where(Function(cnpj) cnpj.ENRIQUECIDO = Nothing).Count < 50 And Contextolivre = True Then
-            Dim THREAD As New Threading.Thread(AddressOf FilaParaAbastecerCNPJ)
-            THREAD.Start()
+            PesquisarCNPJ(CadastroCnpj)
         End If
 
     End Sub
 
-    Private Sub FilaParaAbastecerCNPJ()
-        Contextolivre = False
-        Using context As New CrawlerContext
-            FuncoesUteisDAO.ReabastecerCNPJS(context)
-        End Using
-        Contextolivre = True
-    End Sub
 
     Private Sub PosicionarNaConsulta()
 
@@ -57,7 +41,7 @@ Public Class PaginaDePesquisa
 
     End Sub
 
-    Private Sub PesquisarCNPJ(eMPRESA As CNPJ)
+    Private Sub PesquisarCNPJ(CadastroCnpj As CadastroCNPJ)
 
         Wait.Until(ExpectedConditions.ElementExists(By.XPath("//*[@id='s_1_1_16_0_Ctrl']")))
 
@@ -70,7 +54,7 @@ Public Class PaginaDePesquisa
         Wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//*[@id='1_s_1_l_VIVO_Documento']"))).Click()
 
 
-        drive.FindElement(By.XPath("//*[@id='1_VIVO_Documento']")).SendKeys(eMPRESA.CNPJS) ' FormCNPJAberto
+        drive.FindElement(By.XPath("//*[@id='1_VIVO_Documento']")).SendKeys(CadastroCnpj.CNPJ) ' FormCNPJAberto
 
         drive.FindElement(By.XPath("//*[@id='1_s_1_l_Account_Status']")).Click() ' FormStatusDaConta
 
@@ -80,9 +64,13 @@ Public Class PaginaDePesquisa
 
     End Sub
 
-    Public Sub LocalizarProximoCnpj()
+    Public Function LocalizarProximoCnpj(empresas As DbSet(Of CadastroCNPJ)) As ClienteVivo
+
+        Dim cnpjEnriquecer = empresas.Except(empresas.OfType(Of CadastroCNPJEnriquecido)).First
+
+
         Do
-            ConsultarCnpj()
+            ConsultarCnpj(cnpjEnriquecer)
             Dim BtnPesquisar As By = By.XPath("//*[@id='s_1_1_16_0_Ctrl']")
 
             Try
@@ -90,7 +78,9 @@ Public Class PaginaDePesquisa
             Catch ex As WebDriverTimeoutException
                 If FuncoesUteis.ChecarErroPrivilegios(drive) Then
                     drive.Navigate.Back()
-                    CNPJ.ENRIQUECIDO = 2
+                    Dim cnpjNaoEncontrado = CType(cnpjEnriquecer, CadastroCNPJEnriquecido)
+                    cnpjNaoEncontrado.EnriquecidoVivoMovel = Now
+                    empresas.Add(cnpjNaoEncontrado)
                     Continue Do
                 End If
             End Try
@@ -99,26 +89,29 @@ Public Class PaginaDePesquisa
 
             Try
                 drive.FindElement(By.XPath("//*[@id='1']"))
-                Console.WriteLine($"{CNPJ.CNPJS} Retornou informações e será adicionada ao banco")
+                Console.WriteLine($"{cnpjEnriquecer.CNPJ} Retornou informações e será adicionada ao banco")
                 WebdriverCt.Wait.Timeout = New TimeSpan(0, 0, 1)
-                ThreadsActivity = Now
-                Crawler.Empresa = New ClienteVivo()
+
+                Dim ClienteVivo = CType(cnpjEnriquecer, ClienteVivo)
+                ClienteVivo.EnriquecidoVivoMovel = Now
+
                 AcessarClinte()
-                Exit Sub
+                Return ClienteVivo
 
             Catch ex As Threading.ThreadAbortException
                 Throw
 
             Catch ex As Exception
-                Console.WriteLine($"{CNPJ.CNPJS} Foi consultado e Descartado às " + Now.ToString)
-                ThreadsActivity = Now
-                CNPJ.ENRIQUECIDO = 2
+                Console.WriteLine($"{cnpjEnriquecer.CNPJ} Foi consultado e Descartado às " + Now.ToString)
+                Dim cnpjNaoEncontrado = CType(cnpjEnriquecer, CadastroCNPJEnriquecido)
+                cnpjNaoEncontrado.EnriquecidoVivoMovel = Now
+                empresas.Add(cnpjNaoEncontrado)
                 Continue Do
 
             End Try
 
         Loop
-    End Sub
+    End Function
 
 
 

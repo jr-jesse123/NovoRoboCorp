@@ -6,8 +6,14 @@ Module Module1
 
         Dim crawler As New Crawler()
 
-        crawler.EnriquecerCNPJS()
+
+        crawler.run
+
+
+
+
 
     End Sub
+
 
 End Module

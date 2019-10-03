@@ -1,10 +1,10 @@
 ﻿Friend Class GerenciadorDeApis
     Private linhas As List(Of LINHA)
     Private empresa As ClienteVivo
-    Private gestores As List(Of GESTOR)
+    Private gestores As List(Of GestorVivo)
     Private socios As List(Of SociosReceita)
 
-    Public Sub New(linhas As List(Of LINHA), empresa As ClienteVivo, gestores As List(Of GESTOR), socios As List(Of SociosReceita))
+    Public Sub New(linhas As List(Of LINHA), empresa As ClienteVivo, gestores As List(Of GestorVivo), socios As List(Of SociosReceita))
         Me.linhas = linhas
         Me.empresa = empresa
         Me.gestores = gestores
@@ -42,7 +42,7 @@
 
             Dim resultado As String = ApiBitrix.RequestDadosWeb(apistring)
             If resultado Like "*result*" Then
-                Console.WriteLine("cliente enviao ao bitrix")
+                Crawler.EnviarLog("cliente enviao ao bitrix")
             End If
         End If
 

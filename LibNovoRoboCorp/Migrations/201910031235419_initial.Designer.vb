@@ -13,7 +13,7 @@ Namespace Migrations
         
         Private ReadOnly Property IMigrationMetadata_Id() As String Implements IMigrationMetadata.Id
             Get
-                Return "201910021837318_initial"
+                Return "201910031235419_initial"
             End Get
         End Property
         

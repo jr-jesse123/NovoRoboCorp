@@ -1,8 +1,10 @@
 ﻿Imports System.ComponentModel.DataAnnotations.Schema
 
-<Table("CadstRoCNPJEnriquecido")>
+
 Public Class CadastroCNPJEnriquecido
     Inherits CadastroCNPJ
+
+
 
     Private _EnriquecidoVivoMovel As Date
     Private _EnriquecidoPhenix As Date
@@ -12,7 +14,7 @@ Public Class CadastroCNPJEnriquecido
         Get
             Return _EnriquecidoVivoMovel
         End Get
-        Protected Set
+        Set
             _EnriquecidoVivoMovel = Value
         End Set
     End Property
@@ -21,7 +23,7 @@ Public Class CadastroCNPJEnriquecido
         Get
             Return _EnriquecidoPhenix
         End Get
-        Protected Set
+        Set
             _EnriquecidoPhenix = Value
         End Set
     End Property
@@ -30,8 +32,15 @@ Public Class CadastroCNPJEnriquecido
         Get
             Return _EnriquecidoClaro
         End Get
-        Protected Set
+        Set
             _EnriquecidoClaro = Value
         End Set
     End Property
+
+
+    Sub New()
+
+        'stop feito para saber se o new é chamado quando há um cast
+        Stop
+    End Sub
 End Class

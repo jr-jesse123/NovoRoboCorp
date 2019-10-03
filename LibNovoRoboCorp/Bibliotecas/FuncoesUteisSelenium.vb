@@ -3,6 +3,7 @@ Imports System.Data.Entity.Infrastructure
 Imports System.IO
 Imports System.Runtime.Serialization
 Imports System.Runtime.Serialization.Formatters.Binary
+Imports System.Text.RegularExpressions
 Imports OpenQA.Selenium
 Imports OpenQA.Selenium.Support.UI
 Imports RobôCorp
@@ -245,6 +246,7 @@ Constuir:
     Shared Function PrepararContasParaInserirNaTabela(Contas As DataTable, tabelaWEbElement As IWebElement, ParamArray colunas As Integer()) _
         As List(Of DataRow)
 
+        Stop
 
         Dim ListaContas As New List(Of DataRow)
 
@@ -256,7 +258,7 @@ Constuir:
             Dim td As IReadOnlyList(Of IWebElement) = webrow.FindElements(By.TagName("td"))
 
             For i = 0 To (td.Count - 1)
-                'Console.WriteLine(i.ToString + " " + td(i).Text)
+
                 If colunas.Contains(i) Then
                     Try
                         If i = 1 Then
@@ -271,7 +273,7 @@ Constuir:
 
                     Catch ex As StaleElementReferenceException
                         conta(i) = "Erro na importação desta infomação"
-                        Console.WriteLine("Erro de stale no elemento: " + td(i).GetAttribute("name"))
+                        Crawler.EnviarLog("Erro de stale no elemento: " + td(i).GetAttribute("name"))
                     End Try
                 End If
             Next
@@ -373,13 +375,9 @@ Constuir:
     End Sub
 
     Public Shared Sub debug(ex As Exception)
-        Console.WriteLine(ex.Message)
-        Console.WriteLine(ex.StackTrace)
+        Crawler.EnviarLog(ex.Message)
+        Crawler.EnviarLog(ex.StackTrace)
         Console.Beep(600, 4000)
-        Stop
-        Dim log As String = listaDeCNPJ.First.CNPJS.ToString + vbCrLf + ex.Message + vbCrLf + ex.StackTrace
-        GravarLog(log)
-
 
 
 
@@ -401,10 +399,10 @@ Constuir:
 
         Dim instances As Process()
         instances = Process.GetProcessesByName("RobôCorp")
-        Console.WriteLine(instances.Count.ToString + " Instancias encontradas")
+        Crawler.EnviarLog(instances.Count.ToString + " Instancias encontradas")
         Dim indice As Integer = instances.Count
         If indice < 1 Then indice = 1
-        Console.WriteLine("aplicando indice = " + indice.ToString)
+        Crawler.EnviarLog("aplicando indice = " + indice.ToString)
 
         Return indice
     End Function
@@ -441,8 +439,12 @@ Constuir:
 
 
 
+    Public Shared Function RemoveSpecialCharacters(str As String) As String
 
+        Dim padrao As String = "[^0-9]+"
+        Return Regex.Replace(str, padrao, "")
 
+    End Function
 End Class
 
 
