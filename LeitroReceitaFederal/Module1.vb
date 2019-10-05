@@ -7,15 +7,29 @@ Imports LibNovoRoboCorp
 
 Module Module1
     Dim leitor As StreamReader
+    Dim escritorEmpresas As New StreamWriter("ResultadoEmpresas.csv")
+    Dim escritorEmpresasErro As New StreamWriter("ResultadoErroEmpresas.csv")
+    Dim escritorSocios As New StreamWriter("ResultadoSocios.csv")
+    Dim escritorCnaes As New StreamWriter("ResultadoCnaes.csv")
+
 
     Sub Main()
 
-        Dim arquivos As String() = Directory.GetFiles(Directory.GetCurrentDirectory)
+        Dim arquivos = Directory.GetFiles(Directory.GetCurrentDirectory) _
+        .Where(Function(x)
+                   Return Not x.EndsWith("exe") And
+                   Not x.EndsWith("csv") And
+                   Not x.EndsWith("pdb") And
+                   Not x.EndsWith("xml") And
+                   Not x.EndsWith("config") And
+                   Not x.EndsWith("zip") And
+                   Not x.EndsWith("dll")
+               End Function)
 
-        For Each arquivo In arquivos.Where(Function(a) Not a.EndsWith("exe") And Not a.EndsWith("csv"))
+
+        For Each arquivo In arquivos
 
             Try
-
 
                 Dim FluxoDoArquivo As New FileStream(arquivo, FileMode.OpenOrCreate)
                 leitor = New StreamReader(FluxoDoArquivo)
@@ -29,11 +43,11 @@ Module Module1
                 Stop
                 Console.Write(ex.Message + Environment.NewLine + ex.StackTrace)
 
-                Console.ReadLine()
+
             End Try
 
-
         Next
+
     End Sub
 
 
@@ -42,12 +56,8 @@ Module Module1
         Dim ProximoCnpj As Boolean
         Dim vlinha = leitor.ReadLine.RemoveSpecialCharacters
 
-        Using escritorEmpresas As New StreamWriter("ResultadoEmpresas.csv")
-            Using escritorEmpresasErro As New StreamWriter("ResultadoErroEmpresas.csv")
-                Using escritorSocios As New StreamWriter("ResultadoSocios.csv")
-                    Using escritorCnaes As New StreamWriter("ResultadoCnaes.csv")
 
-                        Do Until leitor.EndOfStream
+        Do Until leitor.EndOfStream
 
                             If vlinha.Substring(0, 1) = "1" Then
 
@@ -104,17 +114,13 @@ Module Module1
 
                         Loop
 
-                    End Using
-                End Using
-            End Using
-        End Using
 
     End Sub
 
     <Extension()>
     Public Function RemoveSpecialCharacters(str As String) As String
 
-        Dim padrao As String = "[^a-zA-Z0-9_.| |*|@|,|(|)|-|/|-]+"
+        Dim padrao As String = "[^a-zA-Z0-9_.| |*|@|,|(|)|-|/|-|ç|ã|õ]+"
         Try
 
             Dim especiais = Regex.Matches(str, padrao)

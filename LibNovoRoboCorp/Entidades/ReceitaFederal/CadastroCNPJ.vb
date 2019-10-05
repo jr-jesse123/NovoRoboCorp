@@ -284,6 +284,11 @@ Public Class CadastroCNPJ ' tipo 1
 
 
         Me.DataDeInicioDaAtividade = data
+
+        If Me.DataDeInicioDaAtividade.Year < 1800 Or Me.DataDeInicioDaAtividade.Year > 9999 Then
+            Me.DataDeInicioDaAtividade = New Date(1966, 1, 1)
+        End If
+
         Me.CNAE = vlinha.Substring(375, 7)
         Dim Endereco = vlinha.Substring(382, 240)
 
@@ -327,7 +332,13 @@ Public Class CadastroCNPJ ' tipo 1
         End Try
 
         Me.QualificacaoResponsavel = vlinha.Substring(889, 2)
-        Me.CapitalSocial = vlinha.Substring(891, 14)
+        Try
+            Me.CapitalSocial = vlinha.Substring(891, 14)
+        Catch ex As Exception
+            Me.CapitalSocial = FuncoesUteis.RemoverLetras(vlinha.Substring(891, 14))
+
+        End Try
+
         Try
             Me.PorteDaEmpresa = vlinha.Substring(905, 2)
         Catch ex As InvalidCastException
