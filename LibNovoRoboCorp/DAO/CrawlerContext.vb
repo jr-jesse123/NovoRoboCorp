@@ -4,22 +4,21 @@ Imports MySql.Data.Entity
 
 
 
-<DbConfigurationType(GetType(MySqlEFConfiguration))>
+'<DbConfigurationType(GetType(MySqlEFConfiguration))>
 Public Class CrawlerContext
     Inherits DbContext
 
 
     Public Property LINHAS As DbSet(Of LINHA)
-    'Public Property GESTORES As DbSet(Of GestorVivo)
-    'Public Property Empresas As DbSet(Of CadastroCNPJ)
-
-
-
-
-
+    Public Property GESTORES As DbSet(Of GestorVivo)
+    Public Property Empresas As DbSet(Of CadastroCNPJ)
 
     Sub New()
-        MyBase.New("server=192.168.244.112;userid=root;password=758686;persistsecurityinfo=True;database=VivoCorp")
+        MyBase.New("Data Source=192.168.244.112,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d")
+
+
+        Dim teste = System.Configuration.ConfigurationManager.AppSettings("")
+
     End Sub
 
 
@@ -28,31 +27,6 @@ Public Class CrawlerContext
 
         modelBuilder.Conventions.Add(New NonPublicColumnAttributeConvention())
 
-        'modelBuilder.Entity(Of ClienteVivo)() _
-        '.Map(Sub(cv)
-        '         cv.MapInheritedProperties()
-        '         cv.ToTable("ClienteVivo")
-        '     End Sub)
-
-        'modelBuilder.HasDefaultSchema("VivoCorp")
-
-
-        'modelBuilder.Entity(Of ClienteVivo)() _
-        '.ToTable("ClientesVivo", "Receita")
-
-        'modelBuilder.Entity(Of CadastroCNPJ)() _
-        '.ToTable("CadastrosCNPJs", "Receita")
-
-        'modelBuilder.Entity(Of SociosReceita)() _
-        '.ToTable("Socios", "Receita")
-
-        'modelBuilder.Entity(Of CadastroCNPJEnriquecido)() _
-        '.ToTable("CadastrosCNPJEnriquecidos", "VivoCorp") ' verificar este teste
-
-        'modelBuilder.Entity(Of SocioCorp)() _
-        '.ToTable("SociosVivoCorp") ' verificar este teste
-
-
 
     End Sub
 
@@ -60,20 +34,3 @@ Public Class CrawlerContext
 End Class
 
 
-
-'Public Class EntityMappingConfiguration(Of TEntityType) ' where TEntityType : Class
-
-'    Public Function Requires(discriminator As String) As ValueConditionConfiguration
-
-'    End Function
-
-
-
-'    Public Sub ToTable(tableName As String)
-'    End Sub
-
-'    Public Sub MapInheritedProperties()
-'    End Sub
-
-
-'End Class

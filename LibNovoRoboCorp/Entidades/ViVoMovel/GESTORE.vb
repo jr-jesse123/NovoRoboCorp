@@ -4,7 +4,7 @@ Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 Imports System.Data.Entity.Spatial
 Imports LibNovoRoboCorp
-
+<Table(NameOf(GestorVivo), Schema:="VivoCorp")>
 Partial Public Class GestorVivo
     Implements IEquatable(Of GestorVivo)
     Private _EMAIL As String
@@ -28,7 +28,7 @@ Partial Public Class GestorVivo
             Return _TelefoneCelular
         End Get
         Set
-            Dim semletras = FuncoesUteis.RemoveSpecialCharacters(Value)
+            Dim semletras = FuncoesUteis.RemoverLetras(Value)
             _TelefoneCelular = semletras
         End Set
     End Property
@@ -38,7 +38,7 @@ Partial Public Class GestorVivo
             Return _TelefoneFixo
         End Get
         Set
-            Dim semletras = FuncoesUteis.RemoveSpecialCharacters(Value)
+            Dim semletras = FuncoesUteis.RemoverLetras(Value)
             _TelefoneFixo = semletras
         End Set
     End Property

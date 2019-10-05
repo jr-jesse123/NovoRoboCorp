@@ -11,8 +11,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DivisorDeArquivo", "Divisor
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Teste1", "Teste1\Teste1.vbproj", "{86E236DB-3413-4530-86D5-E75C964B88A8}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SQLProject", "SQLProject\SQLProject.sqlproj", "{FF9735AB-85E7-4C84-A538-08954E2B0751}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,12 +33,6 @@ Global
 		{86E236DB-3413-4530-86D5-E75C964B88A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86E236DB-3413-4530-86D5-E75C964B88A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86E236DB-3413-4530-86D5-E75C964B88A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF9735AB-85E7-4C84-A538-08954E2B0751}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF9735AB-85E7-4C84-A538-08954E2B0751}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF9735AB-85E7-4C84-A538-08954E2B0751}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{FF9735AB-85E7-4C84-A538-08954E2B0751}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF9735AB-85E7-4C84-A538-08954E2B0751}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF9735AB-85E7-4C84-A538-08954E2B0751}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

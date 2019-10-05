@@ -1,7 +1,7 @@
 ﻿Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 
-<Table("CadastrosCNPJs", Schema:="ReceitaFederal")>
+<Table(NameOf(CadastroCNPJ), Schema:="ReceitaFederal")>
 Public Class CadastroCNPJ ' tipo 1
     Protected _CNPJ As String
     Protected _MatrizOuFilial As MatrizOuFilialEnum

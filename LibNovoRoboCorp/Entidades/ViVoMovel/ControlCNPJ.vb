@@ -1,6 +1,6 @@
 ﻿Imports System.ComponentModel.DataAnnotations.Schema
 
-
+<Table(NameOf(CadastroCNPJEnriquecido), Schema:="Controle")>
 Public Class CadastroCNPJEnriquecido
     Inherits CadastroCNPJ
 

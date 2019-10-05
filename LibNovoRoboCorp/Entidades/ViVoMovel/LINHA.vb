@@ -5,6 +5,8 @@ Imports System.ComponentModel.DataAnnotations.Schema
 Imports System.Data.Entity.Spatial
 Imports LibNovoRoboCorp
 
+
+<Table(NameOf(LINHA), Schema:="VivoCorp")>
 Partial Public Class LINHA
     Implements IEquatable(Of LINHA)
     Public Property Empresa As ClienteVivo

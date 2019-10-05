@@ -439,7 +439,8 @@ Constuir:
 
 
 
-    Public Shared Function RemoveSpecialCharacters(str As String) As String
+
+    Public Shared Function RemoverLetras(str As String) As String
 
         Dim padrao As String = "[^0-9]+"
         Return Regex.Replace(str, padrao, "")

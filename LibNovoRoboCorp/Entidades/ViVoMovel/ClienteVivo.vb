@@ -4,7 +4,7 @@ Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 Imports System.Data.Entity.Spatial
 
-
+<Table(NameOf(ClienteVivo), Schema:="VivoCorp")>
 Partial Public Class ClienteVivo
     Inherits CadastroCNPJEnriquecido
 
