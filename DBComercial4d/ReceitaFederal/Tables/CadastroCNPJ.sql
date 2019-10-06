@@ -1,0 +1,25 @@
+﻿CREATE TABLE [ReceitaFederal].[CadastroCNPJ] (
+    [CNPJ]                    NVARCHAR (14)  NOT NULL,
+    [MatrizOuFilial]          INT            NOT NULL,
+    [RazaoSocial]             NVARCHAR (150) NULL,
+    [NomeFantasia]            NVARCHAR (55)  NULL,
+    [SituacaoCadastral]       INT            NOT NULL,
+    [CodigoDaNaturezaJudica]  NVARCHAR (4)   NULL,
+    [DataDeInicioDaAtividade] DATETIME       NOT NULL,
+    [CNAE]                    NVARCHAR (7)   NULL,
+    [Endereco]                NVARCHAR (240) NULL,
+    [Bairro]                  NVARCHAR (55)  NULL,
+    [CEP]                     NVARCHAR (8)   NULL,
+    [UF]                      NVARCHAR (2)   NULL,
+    [Cidade]                  NVARCHAR (60)  NULL,
+    [Telefone]                NVARCHAR (10)  NULL,
+    [Telefone2]               NVARCHAR (10)  NULL,
+    [Email]                   NVARCHAR (240) NULL,
+    [QualificacaoResponsavel] NVARCHAR (2)   NULL,
+    [CapitalSocial]           FLOAT (53)     NOT NULL,
+    [PorteDaEmpresa]          INT            NOT NULL,
+    [OptanteSimples]          INT            NOT NULL,
+    [Mei]                     BIT            NOT NULL,
+    CONSTRAINT [PK_ReceitaFederal.CadastroCNPJ] PRIMARY KEY CLUSTERED ([CNPJ] ASC)
+);
+

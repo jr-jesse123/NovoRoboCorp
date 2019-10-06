@@ -1,5 +1,5 @@
 ﻿Imports System.ComponentModel.DataAnnotations.Schema
-
+<Table(NameOf(CNAEsSecundarias), Schema:="ReceitaFederal")>
 Public Class CNAEsSecundarias ' tipo 6
     Private _Id As Integer
     Private _CNPJ As String

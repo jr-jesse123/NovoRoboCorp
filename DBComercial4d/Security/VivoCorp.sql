@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [VivoCorp]
+    AUTHORIZATION [dbo];
+

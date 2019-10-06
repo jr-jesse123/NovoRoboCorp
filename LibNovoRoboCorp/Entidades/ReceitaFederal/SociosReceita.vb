@@ -1,7 +1,7 @@
 ﻿Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
 
-<Table(NameOf(SocioCorp), Schema:="ReceitaFederal")>
+<Table(NameOf(SociosReceita), Schema:="ReceitaFederal")>
 Public Class SociosReceita ' tipo 2
 
     Private _CNPJ As String

@@ -1,4 +1,4 @@
-Imports System
+﻿Imports System
 Imports System.Data.Entity.Migrations
 Imports Microsoft.VisualBasic
 
@@ -8,35 +8,7 @@ Namespace Migrations
     
         Public Overrides Sub Up()
             CreateTable(
-                "ReceitaFederal.CadastroCNPJ",
-                Function(c) New With
-                    {
-                        .CNPJ = c.String(nullable := False, maxLength := 14),
-                        .MatrizOuFilial = c.Int(nullable := False),
-                        .RazaoSocial = c.String(maxLength := 150),
-                        .NomeFantasia = c.String(maxLength := 55),
-                        .SituacaoCadastral = c.Int(nullable := False),
-                        .CodigoDaNaturezaJudica = c.String(maxLength := 4),
-                        .DataDeInicioDaAtividade = c.DateTime(nullable := False),
-                        .CNAE = c.String(maxLength := 7),
-                        .Endereco = c.String(maxLength := 240),
-                        .Bairro = c.String(maxLength := 55),
-                        .CEP = c.String(maxLength := 8),
-                        .UF = c.String(maxLength := 2),
-                        .Cidade = c.String(maxLength := 60),
-                        .Telefone = c.String(maxLength := 10),
-                        .Telefone2 = c.String(maxLength := 10),
-                        .Email = c.String(maxLength := 240),
-                        .QualificacaoResponsavel = c.String(maxLength := 2),
-                        .CapitalSocial = c.Double(nullable := False),
-                        .PorteDaEmpresa = c.Int(nullable := False),
-                        .OptanteSimples = c.Int(nullable := False),
-                        .Mei = c.Boolean(nullable := False)
-                    }) _
-                .PrimaryKey(Function(t) t.CNPJ)
-            
-            CreateTable(
-                "dbo.CNAEsSecundarias",
+                "ReceitaFederal.CNAEsSecundarias",
                 Function(c) New With
                     {
                         .Id = c.Int(nullable := False, identity := True),
@@ -48,7 +20,34 @@ Namespace Migrations
                 .Index(Function(t) t.CNPJ)
             
             CreateTable(
-                "ReceitaFederal.SocioCorp",
+                "ReceitaFederal.CadastroCNPJ",
+                Function(c) New With
+                    {
+                        .CNPJ = c.String(nullable := False, maxLength := 14),
+                        .MatrizOuFilial = c.Int(nullable := False),
+                        .RazaoSocial = c.String(maxLength := 150),
+                        .NomeFantasia = c.String(maxLength := 55),
+                        .CodigoDaNaturezaJudica = c.String(maxLength := 4),
+                        .DataDeInicioDaAtividade = c.DateTime(nullable := False),
+                        .CNAE = c.String(maxLength := 7),
+                        .Endereco = c.String(maxLength := 240),
+                        .Bairro = c.String(maxLength := 55),
+                        .CEP = c.String(maxLength := 8),
+                        .UF = c.Int(nullable := False),
+                        .Cidade = c.String(maxLength := 60),
+                        .Telefone1 = c.String(maxLength := 12),
+                        .Telefone2 = c.String(maxLength := 12),
+                        .Email = c.String(maxLength := 240),
+                        .QualificacaoResponsavel = c.String(maxLength := 2),
+                        .CapitalSocial = c.Double(nullable := False),
+                        .PorteDaEmpresa = c.Int(nullable := False),
+                        .OptanteSimples = c.Int(nullable := False),
+                        .Mei = c.Boolean(nullable := False)
+                    }) _
+                .PrimaryKey(Function(t) t.CNPJ)
+            
+            CreateTable(
+                "ReceitaFederal.SociosReceita",
                 Function(c) New With
                     {
                         .ID = c.Int(nullable := False, identity := True),
@@ -103,7 +102,7 @@ Namespace Migrations
                         .TelefoneCadastrado = c.String()
                     }) _
                 .PrimaryKey(Function(t) t.ID) _
-                .ForeignKey("ReceitaFederal.SocioCorp", Function(t) t.ID) _
+                .ForeignKey("ReceitaFederal.SociosReceita", Function(t) t.ID) _
                 .Index(Function(t) t.ID)
             
             CreateTable(
@@ -145,11 +144,11 @@ Namespace Migrations
             DropForeignKey("VivoCorp.ClienteVivo", "GestorVivo_CPF", "VivoCorp.GestorVivo")
             DropForeignKey("VivoCorp.ClienteVivo", "CNPJ", "Controle.CadastroCNPJEnriquecido")
             DropForeignKey("Controle.CadastroCNPJEnriquecido", "CNPJ", "ReceitaFederal.CadastroCNPJ")
-            DropForeignKey("VivoCorp.SocioCorp", "ID", "ReceitaFederal.SocioCorp")
+            DropForeignKey("VivoCorp.SocioCorp", "ID", "ReceitaFederal.SociosReceita")
             DropForeignKey("VivoCorp.LINHA", "Empresa_CNPJ", "VivoCorp.ClienteVivo")
             DropForeignKey("VivoCorp.GestorVivo", "ClienteVivo_CNPJ", "VivoCorp.ClienteVivo")
-            DropForeignKey("ReceitaFederal.SocioCorp", "CNPJ", "ReceitaFederal.CadastroCNPJ")
-            DropForeignKey("dbo.CNAEsSecundarias", "CNPJ", "ReceitaFederal.CadastroCNPJ")
+            DropForeignKey("ReceitaFederal.SociosReceita", "CNPJ", "ReceitaFederal.CadastroCNPJ")
+            DropForeignKey("ReceitaFederal.CNAEsSecundarias", "CNPJ", "ReceitaFederal.CadastroCNPJ")
             DropIndex("VivoCorp.ClienteVivo", New String() { "GestorVivo_CPF1" })
             DropIndex("VivoCorp.ClienteVivo", New String() { "GestorVivo_CPF" })
             DropIndex("VivoCorp.ClienteVivo", New String() { "CNPJ" })
@@ -157,16 +156,16 @@ Namespace Migrations
             DropIndex("VivoCorp.SocioCorp", New String() { "ID" })
             DropIndex("VivoCorp.LINHA", New String() { "Empresa_CNPJ" })
             DropIndex("VivoCorp.GestorVivo", New String() { "ClienteVivo_CNPJ" })
-            DropIndex("ReceitaFederal.SocioCorp", New String() { "CNPJ" })
-            DropIndex("dbo.CNAEsSecundarias", New String() { "CNPJ" })
+            DropIndex("ReceitaFederal.SociosReceita", New String() { "CNPJ" })
+            DropIndex("ReceitaFederal.CNAEsSecundarias", New String() { "CNPJ" })
             DropTable("VivoCorp.ClienteVivo")
             DropTable("Controle.CadastroCNPJEnriquecido")
             DropTable("VivoCorp.SocioCorp")
             DropTable("VivoCorp.LINHA")
             DropTable("VivoCorp.GestorVivo")
-            DropTable("ReceitaFederal.SocioCorp")
-            DropTable("dbo.CNAEsSecundarias")
+            DropTable("ReceitaFederal.SociosReceita")
             DropTable("ReceitaFederal.CadastroCNPJ")
+            DropTable("ReceitaFederal.CNAEsSecundarias")
         End Sub
     End Class
 End Namespace

@@ -10,14 +10,18 @@ Public Class CrawlerContext
 
 
     Public Property LINHAS As DbSet(Of LINHA)
+
+    Public Property socios As DbSet(Of SociosReceita)
+    Public Property cnaes As DbSet(Of CNAEsSecundarias)
     Public Property GESTORES As DbSet(Of GestorVivo)
     Public Property Empresas As DbSet(Of CadastroCNPJ)
 
+
     Sub New()
-        MyBase.New("Data Source=192.168.244.112,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d")
 
-
-        Dim teste = System.Configuration.ConfigurationManager.AppSettings("")
+        MyBase.New("Data Source=localhost,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d2")
+        'MyBase.New("Data Source=192.168.244.112,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d")
+        'MyBase.New("Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=DBComercial4d;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")
 
     End Sub
 
@@ -26,7 +30,6 @@ Public Class CrawlerContext
         MyBase.OnModelCreating(modelBuilder)
 
         modelBuilder.Conventions.Add(New NonPublicColumnAttributeConvention())
-
 
     End Sub
 

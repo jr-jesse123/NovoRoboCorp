@@ -4,6 +4,7 @@ Imports System.Runtime.CompilerServices
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports LibNovoRoboCorp
+Imports Z.EntityFramework.Extensions
 
 Module Module1
     Dim leitor As StreamReader
@@ -15,7 +16,9 @@ Module Module1
 
     Sub Main()
 
-        Dim arquivos = Directory.GetFiles(Directory.GetCurrentDirectory) _
+        Console.WriteLine("digite a pasta a ser pesquisada")
+        Dim diretorio = Console.ReadLine
+        Dim arquivos = Directory.GetFiles(diretorio) _
         .Where(Function(x)
                    Return Not x.EndsWith("exe") And
                    Not x.EndsWith("csv") And
@@ -29,9 +32,7 @@ Module Module1
 
         For Each arquivo In arquivos
 
-            Try
-
-                Dim FluxoDoArquivo As New FileStream(arquivo, FileMode.OpenOrCreate)
+            Dim FluxoDoArquivo As New FileStream(arquivo, FileMode.OpenOrCreate)
                 leitor = New StreamReader(FluxoDoArquivo)
 
                 Console.WriteLine("NÃAAAAOOO FEEEECHAAARRR ESTAAAAA JANELAAAAAA ")
@@ -39,12 +40,6 @@ Module Module1
 
                 MontarEmpresa()
 
-            Catch ex As Exception
-                Stop
-                Console.Write(ex.Message + Environment.NewLine + ex.StackTrace)
-
-
-            End Try
 
         Next
 
@@ -56,63 +51,106 @@ Module Module1
         Dim ProximoCnpj As Boolean
         Dim vlinha = leitor.ReadLine.RemoveSpecialCharacters
 
+        Dim context As New CrawlerContext
+        Dim context2 As New CrawlerContext
+        Dim context3 As New CrawlerContext
+        Dim empresas As New List(Of CadastroCNPJ)
+        Dim socios As New List(Of SociosReceita)
+        Dim cnaes As New List(Of CNAEsSecundarias)
+
+
+        context.Configuration.AutoDetectChangesEnabled = False
+        context2.Configuration.AutoDetectChangesEnabled = False
+        context3.Configuration.AutoDetectChangesEnabled = False
+
 
         Do Until leitor.EndOfStream
+            Try
+                context.Empresas.AddRange(empresas)
 
-                            If vlinha.Substring(0, 1) = "1" Then
+                context.BulkSaveChanges
 
-                                If vlinha.Substring(223, 2) = "02" Then
-                                    Do
-                                        Try
+            Catch ex As Exception
 
-                                            If vlinha.Substring(0, 1) = "1" Then
-                                                empresa = New CadastroCNPJ(vlinha)
+                For Each empresa In empresas
+                    escritorEmpresasErro.WriteLine(empresa)
+                Next
+
+            End Try
 
 
-                                                Try
-                                                    Validator.ValidateObject(empresa, New ValidationContext(empresa))
-                                                Catch ex As Exception
-                                                    Stop
-                                                    escritorEmpresasErro.WriteLine(empresa.ToString)
-                                                End Try
+            empresas.Clear()
+            socios.Clear()
+            cnaes.Clear()
 
-                                                escritorEmpresas.WriteLine(empresa.ToString)
+            For x = 1 To 300
 
-                                            ElseIf vlinha.Substring(0, 1) = "2" Then
 
-                                                Dim socio As New SociosReceita(vlinha)
 
-                                                escritorSocios.WriteLine(socio.ToString)
+                If vlinha.Substring(0, 1) = "1" Then
 
-                                            ElseIf vlinha.Substring(0, 1) = "6" Then
+                    If vlinha.Substring(223, 2) = "02" Then
+                        If empresa IsNot Nothing Then
+                            empresas.Add(empresa)
+                        End If
+                        Do
+                            Try
 
-                                                Dim CnaesSec As New CNAEsSecundarias(vlinha)
-                                                escritorCnaes.WriteLine(CnaesSec.ToString)
+                                If vlinha.Substring(0, 1) = "1" Then
+                                    empresa = New CadastroCNPJ(vlinha)
 
-                                            End If
 
-                                        Catch ex As Exception
-                                            Stop
-                                            Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine)
-                                            Console.WriteLine("******************************************")
-                                            Console.WriteLine(vlinha)
-                                            Console.WriteLine("******************************************")
-                                        End Try
+                                    Try
+                                        Validator.ValidateObject(empresa, New ValidationContext(empresa))
+                                    Catch ex As Exception
+                                        Stop
+                                        escritorEmpresasErro.WriteLine(empresa.ToString)
+                                        empresa = Nothing
+                                        Exit Do
+                                    End Try
 
-                                        vlinha = leitor.ReadLine.RemoveSpecialCharacters
-                                        ProximoCnpj = Not empresa.CNPJ.Equals(vlinha.Substring(3, 14))
+                                    'escritorEmpresas.WriteLine(empresa.ToString)
 
-                                    Loop Until ProximoCnpj
+                                ElseIf vlinha.Substring(0, 1) = "2" Then
 
-                                Else
-                                    vlinha = leitor.ReadLine.RemoveSpecialCharacters
+                                    Dim socio As New SociosReceita(vlinha)
+
+                                    empresa.Socios.Add(socio)
+                                    'escritorSocios.WriteLine(socio.ToString)
+
+
+
+                                ElseIf vlinha.Substring(0, 1) = "6" Then
+
+                                    Dim CnaesSec As New CNAEsSecundarias(vlinha)
+
+                                    empresa.CnasesSecundarios.Add(CnaesSec)
+                                    'escritorCnaes.WriteLine(CnaesSec.ToString)
+
                                 End If
 
-                            Else
-                                vlinha = leitor.ReadLine.RemoveSpecialCharacters
-                            End If
+                            Catch ex As Exception
+                                Stop
+                                Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine)
+                                Console.WriteLine("******************************************")
+                                Console.WriteLine(vlinha)
+                                Console.WriteLine("******************************************")
+                            End Try
 
-                        Loop
+                            vlinha = leitor.ReadLine.RemoveSpecialCharacters
+                            ProximoCnpj = Not empresa.CNPJ.Equals(vlinha.Substring(3, 14))
+
+                        Loop Until ProximoCnpj
+
+                    Else
+                        vlinha = leitor.ReadLine.RemoveSpecialCharacters
+                    End If
+
+                Else
+                    vlinha = leitor.ReadLine.RemoveSpecialCharacters
+                End If
+            Next
+        Loop
 
 
     End Sub

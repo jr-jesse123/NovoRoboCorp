@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel.DataAnnotations.Schema
+Imports System.Text.RegularExpressions
 
 <Table(NameOf(CadastroCNPJ), Schema:="ReceitaFederal")>
 Public Class CadastroCNPJ ' tipo 1
@@ -19,13 +20,13 @@ Public Class CadastroCNPJ ' tipo 1
     Protected _QualificacaoResponsavel As String
     Protected _Email As String
     Protected _Telefone2 As String
-    Protected _Telefone As String
+    Protected _Telefone1 As String
     Protected _Cidade As String
     Protected _UF As String
     Protected _CEP As String
     Protected _Bairro As String
-    Public Overridable Property Socios As List(Of SociosReceita)
-    Public Overridable Property CnasesSecundarios As List(Of CNAEsSecundarias)
+    Public Overridable Property Socios As New List(Of SociosReceita)
+    Public Overridable Property CnasesSecundarios As New List(Of CNAEsSecundarias)
 
     <Key>
     <Required>
@@ -39,7 +40,7 @@ Public Class CadastroCNPJ ' tipo 1
             _CNPJ = Value
         End Set
     End Property
-    <RegularExpression("\d")>
+    <Range(1, 2)>
     Overridable Property MatrizOuFilial As MatrizOuFilialEnum ' 18 1 - true 2 - false
         Get
             Return _MatrizOuFilial
@@ -69,16 +70,9 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
-    Overridable Property SituacaoCadastral As Integer '224 e 225
-        Get
-            Return _SituacaoCadastral
-        End Get
-        Protected Set
-            _SituacaoCadastral = Value
-        End Set
-    End Property
 
     <StringLength(4)>
+    <RegularExpression("\d{4}")>
     Overridable Property CodigoDaNaturezaJudica As String ' 393 a 397
         Get
             Return _CodigoDaNaturezaJudica
@@ -98,6 +92,7 @@ Public Class CadastroCNPJ ' tipo 1
     End Property
 
     <StringLength(7, MinimumLength:=7)>
+    <RegularExpression("\d{7}")>
     Overridable Property CNAE As String ' 496 a 502
         Get
             Return _CNAE
@@ -138,9 +133,8 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
-    <RegularExpression("\D{2}")>
-    <StringLength(2)>
-    Overridable Property UF As String ' 684 e 685
+
+    Overridable Property UF As UnidadeFederacaoSigla ' 684 e 685
         Get
             Return _UF
         End Get
@@ -159,18 +153,18 @@ Public Class CadastroCNPJ ' tipo 1
         End Set
     End Property
 
-    <StringLength(10)>
-    Overridable Property Telefone As String
+    <StringLength(12)>
+    Overridable Property Telefone1 As String
         Get
-            Return _Telefone
+            Return _Telefone1
         End Get
         Protected Set
-            _Telefone = Value
+            _Telefone1 = Value
         End Set
     End Property
 
-    <StringLength(10)>
-    Overridable Property Telefone2 As String ' 662 a 671
+    <StringLength(12)>
+    Overridable Property Telefone2 As String
         Get
             Return _Telefone2
         End Get
@@ -246,8 +240,21 @@ Public Class CadastroCNPJ ' tipo 1
 
 
 
-        Me.CNPJ = vlinha.Substring(3, 14)
-        Me.MatrizOuFilial = vlinha.Substring(17, 1)
+
+        If Regex.IsMatch(vlinha.Substring(3, 14), "\d{14}") Then
+            Me.CNPJ = vlinha.Substring(3, 14)
+        Else
+            Throw New Exception("ERRO CNPJ")
+        End If
+
+
+        If Regex.IsMatch(vlinha.Substring(17, 1), "[1|2]") Then
+            Me.MatrizOuFilial = CType(vlinha.Substring(17, 1), Integer)
+        Else
+            Me.MatrizOuFilial = 1
+        End If
+
+
         Dim RazaoSocial = vlinha.Substring(18, 150)
         Try
             RazaoSocial = RazaoSocial.Substring(0, RazaoSocial.IndexOf("    "))
@@ -265,33 +272,24 @@ Public Class CadastroCNPJ ' tipo 1
             Me.NomeFantasia = NomeFantasia
         End Try
 
-
-        Me.SituacaoCadastral = vlinha.Substring(223, 2)
-        Me.CodigoDaNaturezaJudica = vlinha.Substring(363, 4)
-
-        Dim datastr = vlinha.Substring(367, 8)
-        Dim ano = datastr.Substring(0, 4)
-        Dim mes = datastr.Substring(4, 2)
-        Dim dia = datastr.Substring(6, 2)
-        Dim data As Date
-
-        Try
-            data = New Date(ano, mes, dia)
-        Catch ex As Exception
-            Crawler.EnviarLog(ex.Message + Environment.NewLine + ex.StackTrace)
-            data = Today
-        End Try
-
-
-        Me.DataDeInicioDaAtividade = data
-
-        If Me.DataDeInicioDaAtividade.Year < 1800 Or Me.DataDeInicioDaAtividade.Year > 9999 Then
-            Me.DataDeInicioDaAtividade = New Date(1966, 1, 1)
+        If Regex.IsMatch(vlinha.Substring(363, 4), "\d{4}") Then
+            Me.CodigoDaNaturezaJudica = vlinha.Substring(363, 4)
+        Else
+            Me.CodigoDaNaturezaJudica = "0000"
         End If
 
-        Me.CNAE = vlinha.Substring(375, 7)
-        Dim Endereco = vlinha.Substring(382, 240)
+        Dim datastr = vlinha.Substring(367, 8)
+        Me.DataDeInicioDaAtividade = PrepararDataInicio(datastr)
 
+
+        If Regex.IsMatch(vlinha.Substring(375, 7), "\d{7]") Then
+            Me.CNAE = vlinha.Substring(375, 7)
+        Else
+            Me.CNAE = "0000000"
+        End If
+
+
+        Dim Endereco = vlinha.Substring(382, 240)
         Try
             Endereco = Replace(Endereco, "  ", "")
         Catch
@@ -309,8 +307,19 @@ Public Class CadastroCNPJ ' tipo 1
             Me.Bairro = Bairro
         End Try
 
-        Me.CEP = vlinha.Substring(674, 8)
-        Me.UF = vlinha.Substring(682, 2)
+        If Regex.IsMatch(vlinha.Substring(674, 8), "\d{8}") Then
+            Me.CEP = vlinha.Substring(674, 8)
+        Else
+            Me.CEP = "00000000"
+        End If
+
+
+        Try
+            Me.UF = vlinha.Substring(682, 2)
+        Catch ex As Exception
+            Me.UF = UnidadeFederacaoSigla.Outras
+        End Try
+
         Dim Cidade = vlinha.Substring(688, 55)
         Try
             Cidade = Cidade.Substring(0, Cidade.IndexOf("    "))
@@ -324,6 +333,9 @@ Public Class CadastroCNPJ ' tipo 1
         Dim Telefone2 = vlinha.Substring(762, 12)
         Dim Email = vlinha.Substring(774, 115)
 
+        Me.Telefone1 = Telefone
+        Me.Telefone2 = Telefone2
+
         Try
             Email = Email.Substring(0, Email.IndexOf("    "))
         Catch
@@ -332,24 +344,24 @@ Public Class CadastroCNPJ ' tipo 1
         End Try
 
         Me.QualificacaoResponsavel = vlinha.Substring(889, 2)
+
         Try
             Me.CapitalSocial = vlinha.Substring(891, 14)
         Catch ex As Exception
             Me.CapitalSocial = FuncoesUteis.RemoverLetras(vlinha.Substring(891, 14))
-
         End Try
 
         Try
             Me.PorteDaEmpresa = vlinha.Substring(905, 2)
         Catch ex As InvalidCastException
             '    Stop
-            Me.PorteDaEmpresa = 0
+            Me.PorteDaEmpresa = PorteEmpresaEnum.NaoInformado
         End Try
 
         Try
             Me.OptanteSimples = vlinha.Substring(907, 1)
         Catch ex As InvalidCastException
-            Me.OptanteSimples = 0
+            Me.OptanteSimples = OpcaoSimplesEnum.NaoOptante
         End Try
 
 
@@ -358,6 +370,28 @@ Public Class CadastroCNPJ ' tipo 1
         Me.Mei = Ismei
 
     End Sub
+
+    Private Function PrepararDataInicio(datastr As String) As Date
+
+        Dim ano = datastr.Substring(0, 4)
+        Dim mes = datastr.Substring(4, 2)
+        Dim dia = datastr.Substring(6, 2)
+        Dim data As Date
+
+        Try
+            data = New Date(ano, mes, dia)
+        Catch ex As Exception
+            Crawler.EnviarLog(ex.Message + Environment.NewLine + ex.StackTrace)
+            data = New Date(1966, 1, 1)
+        End Try
+
+        If data.Year < 1800 Or Me.DataDeInicioDaAtividade.Year > 2030 Then
+            data = New Date(1966, 1, 1)
+        End If
+
+        Return data
+
+    End Function
 
     Public Overrides Function ToString() As String
         Dim output As String
@@ -370,9 +404,9 @@ Public Class CadastroCNPJ ' tipo 1
         Dim intportdaempresa As Integer = PorteDaEmpresa
         Dim intMatis As Integer = MatrizOuFilial
 
-        output = $"{CNPJ};{intMatis};{RazaoSocial};{NomeFantasia};{SituacaoCadastral};{CodigoDaNaturezaJudica};"
+        output = $"{CNPJ};{intMatis};{RazaoSocial};{NomeFantasia};{CodigoDaNaturezaJudica};"
         output += $"{DataDeInicioDaAtividade.ToString("yyyy-MM-dd hh:mm:ss")};{CNAE};{Endereco};{Bairro};{CEP};{UF};"
-        output += $"{Cidade};{Telefone};{Telefone2};{Email};{QualificacaoResponsavel};{CapitalSocial};{intportdaempresa};"
+        output += $"{Cidade};{Telefone1};{Telefone2};{Email};{QualificacaoResponsavel};{CapitalSocial};{intportdaempresa};"
         output += $"{intpotantesimples};{meicsv};"
 
         Return output
@@ -380,9 +414,3 @@ Public Class CadastroCNPJ ' tipo 1
 
 
 End Class
-
-Public Enum MatrizOuFilialEnum
-    Matriz = 1
-    Filial = 2
-End Enum
-
