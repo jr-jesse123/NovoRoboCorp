@@ -19,7 +19,7 @@ Public Class CrawlerContext
 
     Sub New()
 
-        MyBase.New("Data Source=localhost,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d2")
+        MyBase.New("Data Source=192.168.244.112,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d2")
         'MyBase.New("Data Source=192.168.244.112,1433;User ID=sa;Password=Pwd758686;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;initial catalog=BDComercial4d")
         'MyBase.New("Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=DBComercial4d;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")
 

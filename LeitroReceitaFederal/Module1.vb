@@ -7,7 +7,7 @@ Imports LibNovoRoboCorp
 Imports Z.EntityFramework.Extensions
 
 Module Module1
-    Dim leitor As StreamReader
+
     Dim escritorEmpresas As New StreamWriter("ResultadoEmpresas.csv")
     Dim escritorEmpresasErro As New StreamWriter("ResultadoErroEmpresas.csv")
     Dim escritorSocios As New StreamWriter("ResultadoSocios.csv")
@@ -26,19 +26,26 @@ Module Module1
                    Not x.EndsWith("xml") And
                    Not x.EndsWith("config") And
                    Not x.EndsWith("zip") And
-                   Not x.EndsWith("dll")
+                   Not x.EndsWith("dll") And
+                   Not x.EndsWith("001")
                End Function)
 
 
         For Each arquivo In arquivos
 
+            'Dim arquivo = Console.ReadLine
+
             Dim FluxoDoArquivo As New FileStream(arquivo, FileMode.OpenOrCreate)
-                leitor = New StreamReader(FluxoDoArquivo)
 
-                Console.WriteLine("NÃAAAAOOO FEEEECHAAARRR ESTAAAAA JANELAAAAAA ")
-                Console.WriteLine("Este programa está processando todos os cnpsj da receita federal")
 
-                MontarEmpresa()
+            Using leitor As New StreamReader(FluxoDoArquivo)
+                MontarEmpresa(leitor)
+            End Using
+
+            Console.WriteLine("NÃAAAAOOO FEEEECHAAARRR ESTAAAAA JANELAAAAAA ")
+            Console.WriteLine("Este programa está processando todos os cnpsj da receita federal")
+
+
 
 
         Next
@@ -46,7 +53,7 @@ Module Module1
     End Sub
 
 
-    Sub MontarEmpresa()
+    Sub MontarEmpresa(leitor As StreamReader)
         Dim empresa As CadastroCNPJ
         Dim ProximoCnpj As Boolean
         Dim vlinha = leitor.ReadLine.RemoveSpecialCharacters
@@ -59,24 +66,30 @@ Module Module1
         Dim cnaes As New List(Of CNAEsSecundarias)
 
 
+        Dim marcacao = "01778924000186"
+
         context.Configuration.AutoDetectChangesEnabled = False
         context2.Configuration.AutoDetectChangesEnabled = False
         context3.Configuration.AutoDetectChangesEnabled = False
 
 
         Do Until leitor.EndOfStream
+
+
             Try
                 context.Empresas.AddRange(empresas)
 
-                context.BulkSaveChanges
+                context.BulkSaveChanges()
 
             Catch ex As Exception
 
                 For Each empresa In empresas
+                    escritorEmpresasErro.WriteLine(ex.Message)
                     escritorEmpresasErro.WriteLine(empresa)
                 Next
 
             End Try
+
 
 
             empresas.Clear()
@@ -84,8 +97,6 @@ Module Module1
             cnaes.Clear()
 
             For x = 1 To 300
-
-
 
                 If vlinha.Substring(0, 1) = "1" Then
 
