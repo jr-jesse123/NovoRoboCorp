@@ -17,7 +17,7 @@ Public Class CadastroCNPJ ' tipo 1
     Protected _OptanteSimples As OpcaoSimplesEnum
     Protected _PorteDaEmpresa As PorteEmpresaEnum
     Protected _CapitalSocial As Double
-    Protected _QualificacaoResponsavel As String
+    Protected _QualificacaoResponsavel As QualificacaoResponsavelEnum
     Protected _Email As String
     Protected _Telefone2 As String
     Protected _Telefone1 As String
@@ -184,7 +184,7 @@ Public Class CadastroCNPJ ' tipo 1
     End Property
 
     <StringLength(2)>
-    Overridable Property QualificacaoResponsavel As String ' 822 e 823
+    Overridable Property QualificacaoResponsavel As QualificacaoResponsavelEnum ' 822 e 823
         Get
             Return _QualificacaoResponsavel
         End Get
@@ -310,6 +310,7 @@ Public Class CadastroCNPJ ' tipo 1
         If Regex.IsMatch(vlinha.Substring(674, 8), "\d{8}") Then
             Me.CEP = vlinha.Substring(674, 8)
         Else
+            Stop
             Me.CEP = "00000000"
         End If
 
@@ -343,7 +344,13 @@ Public Class CadastroCNPJ ' tipo 1
             Me.Email = Email
         End Try
 
-        Me.QualificacaoResponsavel = vlinha.Substring(889, 2)
+        Try
+            Me.QualificacaoResponsavel = vlinha.Substring(889, 2)
+        Catch ex As Exception
+            Me.QualificacaoResponsavel = QualificacaoResponsavelEnum.OUTROS
+        End Try
+
+
 
         Try
             Me.CapitalSocial = vlinha.Substring(891, 14)
@@ -414,3 +421,40 @@ Public Class CadastroCNPJ ' tipo 1
 
 
 End Class
+
+Public Enum QualificacaoResponsavelEnum
+    OUTROS = 0
+    ADMINISTRADOR = 5
+    DIRETOR = 10
+    INTERVENTOR = 11
+    INVENTARIANTE = 12
+    LIQUIDANTE = 13
+    PRESIDENTE = 16
+    PROCURADOR = 17
+    SECRETÁRIO = 18
+    SÍNDICO_CONDOMÍNIO = 19
+    SÓCIO_CAPITALISTA = 23
+    SÓCIO_COMANDITADO = 24
+    SÓCIO_OSTENSIVO = 31
+    TABELIÃO = 32
+    TESOUREIRO = 33
+    TITULAR_DE_EMPRESA_INDIVIDUAL_IMOBILIÁRIA = 34
+    DIPLOMATA = 39
+    CÔNSUL = 40
+    REPRESENTANTE_DE_ORGANIZAÇÃO_INTERNACIONAL = 41
+    OFICIAL_DE_REGISTRO = 42
+    RESPONSÁVEL = 43
+    MINISTRO_DE_ESTADO_DAS_RELAÇÕES_EXTERIORES = 46
+    SÓCIO_ADMINISTRADOR = 49
+    EMPRESÁRIO = 50
+    CANDIDATO_A_CARGO_POLÍTICO_ELETIVO = 51
+    FUNDADOR = 54
+    PRODUTOR_RURAL = 59
+    CÔNSUL_HONORÁRIO = 60
+    RESPONSÁVEL_INDÍGENA = 61
+    REPRESENTANTE_DA_INSTITUIÇÃO_EXTRATERRITORIAL = 62
+    ADMINISTRADOR_JUDICIAL = 64
+    TITULAR_PESSOA_FÍSICA_RESIDENTE_OU_DOMICILIADO_NO_BRASIL = 65
+    VICE_PRESIDENTE = 77
+
+End Enum
